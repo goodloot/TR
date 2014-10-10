@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package ru.goodloot.tr;
 
@@ -25,8 +24,7 @@ public class TickerThread implements Runnable {
 
     public TickerThread(AbstractTicker ticker) {
 
-        timeWait = 1000;
-        this.ticker = ticker;
+        this(ticker, 1000);
     }
 
     public TickerThread(AbstractTicker ticker, int period) {
@@ -46,8 +44,7 @@ public class TickerThread implements Runnable {
                 correct = ticker.setTicker() == 1;
             } catch (RuntimeException e) {
 
-                System.out.println("Exception setting ticker: "
-                        + e.getMessage());
+                System.out.println("Exception setting ticker: " + e.getMessage());
                 correct = false;
             }
 

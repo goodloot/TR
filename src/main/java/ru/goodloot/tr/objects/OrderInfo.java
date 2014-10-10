@@ -1,18 +1,30 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package ru.goodloot.tr.objects;
 
 /**
- *
+ * 
  * @author lol
  */
 public class OrderInfo {
 
     private boolean orderComplete;
-    private double volExecuted;
+
+    private Double volExecuted;
+
     private boolean success = true;
+
+    private String orderId;
+
+    public OrderInfo() {}
+
+    public OrderInfo(String orderId, boolean orderComplete, Double volExecuted) {
+
+        this.orderId = orderId;
+        this.orderComplete = orderComplete;
+        this.volExecuted = volExecuted;
+    }
 
     public boolean isSuccess() {
         return success;
@@ -30,11 +42,19 @@ public class OrderInfo {
         this.orderComplete = orderComplete;
     }
 
-    public double getVolExecuted() {
+    public Double getVolExecuted() {
         return volExecuted;
     }
 
-    public void setVolExecuted(double volExecuted) {
+    public void setVolExecuted(Double volExecuted) {
         this.volExecuted = volExecuted;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

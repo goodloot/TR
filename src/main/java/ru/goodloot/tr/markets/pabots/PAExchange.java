@@ -4,6 +4,7 @@ import ru.goodloot.tr.enums.TradeTypes;
 import ru.goodloot.tr.objects.OrderInfo;
 import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.Utils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author Artur M.
@@ -47,6 +48,14 @@ public abstract class PAExchange extends AbstractPABot {
                 processExistOrder();
             }
 
+            //            synchronized (PAExchange.class) {
+            //                try {
+            //                    wait();
+            //                } catch (InterruptedException e) {
+            //                    throw new RuntimeException(e);
+            //                }
+            //            }
+
             if (slave.isCorrect() && master.isCorrect()) {
                 processTrading();
             }
@@ -71,15 +80,13 @@ public abstract class PAExchange extends AbstractPABot {
         }
     }
 
-    private boolean processExistOrder() {
+    private void processExistOrder() {
 
         OrderInfo info = exchange.getOrderInfo();
 
         if (info.isOrderComplete()) {
 
-            logger.writeAndOut("tradesUser.txt", "Real " + strTradeLog,
-                            info.getVolExecuted());
-
+            strTradeLog = "Complete  " + strTradeLog;
         } else {
 
             ratio =
@@ -88,20 +95,29 @@ public abstract class PAExchange extends AbstractPABot {
 
             if (exchange.cancelLastOrder()) {
 
-                logger.writeAndOut("tradesUser.txt", "Cancelled " + strTradeLog,
-                                info.getVolExecuted(), ratio);
+                info = updateOrderInfo(info);
 
+                strTradeLog = "Cancelled " + strTradeLog;
             } else {
 
-                logger.writeAndOut("tradesUser.txt", "NOT Cancelled " + strTradeLog,
-                                info.getVolExecuted(), ratio);
-
+                strTradeLog = "NOT Cancelled " + strTradeLog;
             }
         }
+
+        logger.writeAndOut("tradesUser.txt", strTradeLog, info.getVolExecuted());
 
         orderFlag = 0;
 
         exchange.setFundsAmount();
+
+        setLastTrade();
+    }
+
+    protected OrderInfo updateOrderInfo(OrderInfo info) {
+        return info;
+    }
+
+    private void setLastTrade() {
 
         if (lastTrade == TradeTypes.Buy) {
 
@@ -113,8 +129,6 @@ public abstract class PAExchange extends AbstractPABot {
             lastSellRatio = ratio;
             logger.write("sell.txt", ratio);
         }
-
-        return true;
     }
 
     private void processTrading() {
@@ -132,6 +146,11 @@ public abstract class PAExchange extends AbstractPABot {
         diffBtc = expectedBtc - exchange.getBtcAmount();
 
         if (Math.abs(ratio - lastSellRatio) > delta && diffBtc > MIN_DIFF_BTC) {
+
+            logger.out("Buy sign", masterTickerBuy, masterTickerSell, slaveTickerBuy,
+                            slaveTickerSell, Utils.round(prevRatio, 6),
+                            Utils.round(ratio, 6), exchange.getBtcAmount(),
+                            exchange.getUsdAmount());
 
             if (exchange.tradeBuyMargin(diffBtc)) {
 
@@ -153,6 +172,11 @@ public abstract class PAExchange extends AbstractPABot {
 
             if (Math.abs(lastBuyRatio - ratio) > delta && diffBtc < -MIN_DIFF_BTC) {
 
+                logger.out("Sell sign", masterTickerBuy, masterTickerSell,
+                                slaveTickerBuy, slaveTickerSell,
+                                Utils.round(prevRatio, 6), Utils.round(ratio, 6),
+                                exchange.getBtcAmount(), exchange.getUsdAmount());
+
                 if (exchange.tradeSellMargin(diffBtc)) {
 
                     lastTrade = TradeTypes.Sell;
@@ -169,7 +193,7 @@ public abstract class PAExchange extends AbstractPABot {
     }
 
     public double getUsdCource() {
-        return 1;
+        throw new NotImplementedException();
     }
 
     protected double getExpectedBtc(double k) {

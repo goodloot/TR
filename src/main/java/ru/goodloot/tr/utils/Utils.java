@@ -26,7 +26,7 @@ public class Utils {
         return System.currentTimeMillis();
     }
 
-    public static String getDate() {
+    public static String getDateString() {
 
         String d = new Date().toString();
         return d.substring(0, d.length() - 9);
@@ -57,5 +57,9 @@ public class Utils {
                             "Thread Interrunted! " + e.toString());
             e.printStackTrace();
         }
+    }
+
+    public static Date now() {
+        return new Date();
     }
 }

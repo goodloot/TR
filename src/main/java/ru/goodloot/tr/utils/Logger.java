@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package ru.goodloot.tr.utils;
 
@@ -17,12 +16,10 @@ public class Logger {
     String className;
 
     public Logger(String className) {
-
         this.className = className;
     }
 
     public Logger(Class clazz) {
-
         this.className = clazz.getSimpleName();
     }
 
@@ -54,18 +51,18 @@ public class Logger {
             } else {
                 sb.append(o);
             }
-            sb.append("\t");
+            if (o != objs[objs.length - 1]) {
+                sb.append("\t");
+            }
         }
         return sb.toString();
     }
 
     public String getFullStr(Object... objs) {
-
-        return getFullStr(Utils.getDate() + "\t", objs);
+        return getFullStr(Utils.getDateString() + "\t", objs);
     }
 
     public String getFullStrWithoutDate(Object... objs) {
-
         return getFullStr("", objs);
     }
 
@@ -76,20 +73,11 @@ public class Logger {
         System.out.println(str);
     }
 
-    // public void writeAndOut(Object... objs) {
-    //
-    // String str = getFullStr(objs);
-    // write("main.log", str);
-    // System.out.println(str);
-    // }
-
     public void write(String fileName, Object... objs) {
-
         write(fileName, getFullStr(objs));
     }
 
     public void out(Object... objs) {
-
         System.out.println(getFullStr(objs));
     }
 }

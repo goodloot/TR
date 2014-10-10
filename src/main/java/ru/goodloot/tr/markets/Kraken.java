@@ -20,7 +20,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.goodloot.tr.objects.OrderInfo;
-import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.Utils;
 
 /**
@@ -39,13 +38,9 @@ public class Kraken extends TradableExchange {
 
     private Map<String, String> argsStatus = new HashMap<>();
 
-    private String lastOrderId;
-
     protected double eurAmout;
 
-    public static final double USD_EUR = 1.38;
-
-    private static final Logger logger = new Logger(Kraken.class);
+    public static final double EUR_USD = 1.38;
 
     public Kraken(String secret, String key) {
 
@@ -62,10 +57,10 @@ public class Kraken extends TradableExchange {
         argsMarginSell.put("ordertype", "limit");
     }
 
-    static public Object callFunc(String pair, String func) {
+    static public JSONObject callFunc(String pair, String func) {
 
         String url = "https://api.kraken.com/0/public/" + func + "?pair=" + pair;
-        return sendGet(url);
+        return (JSONObject) sendGet(url);
     }
 
     @Override
@@ -157,7 +152,7 @@ public class Kraken extends TradableExchange {
         JSONObject jsonObjTemp = (JSONObject) jsonObj.get("result");
 
         setBtcAmount(Double.parseDouble(jsonObjTemp.get("XXBT").toString()));
-        setUsdAmount(Double.parseDouble(jsonObjTemp.get("ZEUR").toString()) * USD_EUR);
+        setUsdAmount(Double.parseDouble(jsonObjTemp.get("ZEUR").toString()) * EUR_USD);
         return true;
     }
 
@@ -165,7 +160,7 @@ public class Kraken extends TradableExchange {
 
         double volume;
 
-        JSONObject jo = (JSONObject) callFunc("XBTEUR", "Ticker");
+        JSONObject jo = callFunc("XBTEUR", "Ticker");
 
         depthPrice =
                         ((JSONArray) ((JSONObject) ((JSONObject) jo.get("result"))
@@ -176,8 +171,8 @@ public class Kraken extends TradableExchange {
 
         double usdAmount = getUsdAmount();
 
-        if (diffBtc * Double.valueOf(depthPrice) * USD_EUR > usdAmount) {
-            volume = usdAmount / USD_EUR / Double.valueOf(depthPrice);
+        if (diffBtc * Double.valueOf(depthPrice) * EUR_USD > usdAmount) {
+            volume = usdAmount / EUR_USD / Double.valueOf(depthPrice);
         } else {
             volume = diffBtc;
         }
@@ -198,7 +193,7 @@ public class Kraken extends TradableExchange {
 
         double volume;
         JSONObject tradeRes;
-        JSONObject jo = (JSONObject) callFunc("XBTEUR", "Ticker");
+        JSONObject jo = callFunc("XBTEUR", "Ticker");
 
         depthPrice =
                         ((JSONArray) ((JSONObject) ((JSONObject) jo.get("result"))

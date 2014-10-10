@@ -1,19 +1,19 @@
-/*
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package ru.goodloot.tr.markets.pabots;
 
 import ru.goodloot.tr.TickerThread;
-import ru.goodloot.tr.markets.Kraken;
+import ru.goodloot.tr.markets.Anx;
+import ru.goodloot.tr.objects.OrderInfo;
 import ru.goodloot.tr.utils.Logger;
 
 /**
+ * @author Artur M.
+ * @created Oct 5, 2014
  * 
- * @author lol
+ * @Description ...
  */
-public class PAKraken extends PAExchange {
+public class PAAnx extends PAExchange {
 
-    public PAKraken(String confName, TickerThread master, TickerThread slave) {
+    public PAAnx(String confName, TickerThread master, TickerThread slave) {
 
         this.confName = confName;
         this.master = master;
@@ -30,24 +30,30 @@ public class PAKraken extends PAExchange {
 
         super.init();
 
-        exchange = new Kraken(secret, key);
+        exchange = new Anx(secret, key);
 
         return true;
     }
 
     @Override
+    protected OrderInfo updateOrderInfo(OrderInfo info) {
+        return exchange.getOrderInfo();
+    }
+
+    @Override
     public String getFolder() {
 
-        return "kraken" + getMasterName();
+        return "anx" + getMasterName();
     }
 
     @Override
     protected String getApiConfName() {
 
-        return "kraken.conf";
+        return "anx.conf";
     }
 
+    @Override
     public double getUsdCource() {
-        return Kraken.EUR_USD;
+        return Anx.HKD_USD;
     }
 }

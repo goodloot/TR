@@ -5,26 +5,36 @@ package ru.goodloot.tr.markets;
 
 import java.util.Map;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ru.goodloot.tr.objects.OrderInfo;
 import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.Utils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
- *
+ * 
  * @author lol
  */
 public abstract class TradableExchange extends Exchange {
 
     private String apiSecret;
+
     private String apiKey;
+
     private long nonce;
+
     private double btcAmount = 0;
+
     private double usdAmount = 0;
+
     protected String depthPrice;
+
+    protected String lastOrderId;
+
     private boolean printMethodCallResponce = true;
+
     private boolean printMethodCallRequest = true;
+
     private static final Logger logger = new Logger(TradableExchange.class);
 
     public TradableExchange(String secret, String key) {
@@ -44,20 +54,31 @@ public abstract class TradableExchange extends Exchange {
      */
     protected final JSONObject callMethod(String method, Map<String, String> arguments) {
 
+        return callMethod(method, arguments, null);
+    }
+
+    protected final JSONObject callMethod(String method, Map<String, String> arguments,
+                    String apiVersion) {
+
         if (printMethodCallRequest) {
-            logger.out("Call method: " + method, arguments);
+            logger.out("Call method: " + method, "Args: " + arguments);
         }
 
-        String response = sendRequest(method, arguments);
+        String response;
+
+        if (apiVersion == null) {
+            response = sendRequest(method, arguments);
+        } else {
+            response = sendRequest(method, arguments, apiVersion);
+        }
 
         if (printMethodCallResponce) {
-            logger.out("Method: " + method, response);
+            logger.out("Method: " + method, "Response: " + response);
         }
 
-        JSONParser parser = new JSONParser();
-
         try {
-            return (JSONObject) parser.parse(response.toString());
+            return response.isEmpty() ? null : (JSONObject) parser.parse(response
+                            .toString());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -65,7 +86,16 @@ public abstract class TradableExchange extends Exchange {
 
     abstract protected String sendRequest(String method, Map<String, String> arguments);
 
+    protected String sendRequest(String method, Map<String, String> arguments,
+                    String apiVersion) {
+        throw new NotImplementedException();
+    }
+
     abstract public double getFee();
+
+    public double feeMultiplier() {
+        return 1 - getFee();
+    }
 
     abstract public boolean setFundsAmount();
 

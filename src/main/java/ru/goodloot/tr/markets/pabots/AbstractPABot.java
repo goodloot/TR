@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.markets.TradableExchange;
+import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.LoggerUtils;
 
 /**
@@ -15,6 +16,8 @@ import ru.goodloot.tr.utils.LoggerUtils;
  * @author lol
  */
 public abstract class AbstractPABot<T extends TradableExchange> implements Runnable {
+
+    private static final Logger logger = new Logger(AbstractPABot.class);
 
     public T tradeExchange;
 
@@ -78,6 +81,8 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
         setKeySecret();
 
+        logger.out("Reading " + confName + " for configurating");
+
         String str = LoggerUtils.readLast(confName);
         String args[] = str.split(" ");
 
@@ -87,7 +92,7 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         readLast = Boolean.parseBoolean(args[3]);
 
         if (readLast) {
-            initLastsRatio();
+            initLastsRatio(getFolder());
         } else {
 
             lastSellRatio = Double.parseDouble(args[4]);
@@ -116,19 +121,28 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
             secret = args[1];
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Can't read key and secret from "
+                            + getApiConfName(), e);
         }
     }
 
-    private void initLastsRatio() {
+    public void initLastsRatio(String folder) {
 
-        String str = LoggerUtils.readLast(getFolder() + "/buy.txt");
+        try {
+            String str = LoggerUtils.readLast(folder + "/buy.txt");
+            lastBuyRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
+        } catch (RuntimeException e) {
+            logger.out("Exception reading buy.txt, set lastBuyRatio = 10", e);
+            lastBuyRatio = 10;
+        }
 
-        lastBuyRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
-
-        str = LoggerUtils.readLast(getFolder() + "/sell.txt");
-
-        lastSellRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
+        try {
+            String str = LoggerUtils.readLast(folder + "/sell.txt");
+            lastSellRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
+        } catch (RuntimeException e) {
+            logger.out("Exception reading sell.txt, set lastSellRatio = 10", e);
+            lastSellRatio = 10;
+        }
     }
 
     protected boolean isWriteInLog() {
