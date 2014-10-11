@@ -13,11 +13,11 @@ import ru.goodloot.tr.markets.Anx;
 public class AnxTicker extends AbstractTicker {
 
     @Override
-    protected void setNewPrices() {
+    protected void setCandidates() {
 
         JSONObject joTemp = jsonValue(Anx.callFunc("BTCHKD", "ticker"), "data");
 
-        tickerBuy = Double.parseDouble(value(jsonValue(joTemp, "sell"), "value"));
-        tickerSell = Double.parseDouble(value(jsonValue(joTemp, "buy"), "value"));
+        candidateBuy = Double.parseDouble(value(jsonValue(joTemp, "sell"), "value"));
+        candidateSell = Double.parseDouble(value(jsonValue(joTemp, "buy"), "value"));
     }
 }

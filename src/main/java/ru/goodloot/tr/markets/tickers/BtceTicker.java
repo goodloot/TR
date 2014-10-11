@@ -17,23 +17,23 @@ public class BtceTicker extends AbstractTicker {
 
         JSONObject jsonObjBtce = Btce.callFunc("btc_usd", "ticker");
 
-        tickerBuy =
+        candidateBuy =
                         Double.parseDouble(((JSONObject) jsonObjBtce.get("ticker")).get(
                                         "buy").toString());
-        tickerSell =
+        candidateSell =
                         Double.parseDouble(((JSONObject) jsonObjBtce.get("ticker")).get(
                                         "sell").toString());
     }
 
     @Override
-    protected void setNewPrices() {
+    protected void setCandidates() {
 
         JSONObject depth = Btce.callFunc("btc_usd", "depth");
 
-        tickerBuy =
+        candidateBuy =
                         Double.parseDouble(((JSONArray) ((JSONArray) depth.get("asks"))
                                         .get(0)).get(0).toString());
-        tickerSell =
+        candidateSell =
                         Double.parseDouble(((JSONArray) ((JSONArray) depth.get("bids"))
                                         .get(0)).get(0).toString());
     }

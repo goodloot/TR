@@ -14,13 +14,17 @@ import ru.goodloot.tr.markets.Kraken;
 public class KrakenTicker extends AbstractTicker {
 
     @Override
-    protected void setNewPrices() {
+    protected void setCandidates() {
 
         JSONObject joTemp =
                         jsonValue(jsonValue(Kraken.callFunc("XBTEUR", "Ticker"), "result"),
                                         "XXBTZEUR");
 
-        tickerBuy = Double.parseDouble(((JSONArray) joTemp.get("a")).get(0).toString());
-        tickerSell = Double.parseDouble(((JSONArray) joTemp.get("b")).get(0).toString());
+        candidateBuy =
+                        Double.parseDouble(((JSONArray) joTemp.get("a")).get(0)
+                                        .toString());
+        candidateSell =
+                        Double.parseDouble(((JSONArray) joTemp.get("b")).get(0)
+                                        .toString());
     }
 }

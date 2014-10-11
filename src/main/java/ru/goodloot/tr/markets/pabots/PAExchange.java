@@ -51,13 +51,13 @@ public abstract class PAExchange extends AbstractPABot {
                     processExistOrder();
                 }
 
-                //            synchronized (PAExchange.class) {
-                //                try {
-                //                    wait();
-                //                } catch (InterruptedException e) {
-                //                    throw new RuntimeException(e);
+                //                synchronized (this) {
+                //                    try {
+                //                        wait();
+                //                    } catch (InterruptedException e) {
+                //                        throw new RuntimeException(e);
+                //                    }
                 //                }
-                //            }
 
                 if (slave.isCorrect() && master.isCorrect()) {
                     processTrading();

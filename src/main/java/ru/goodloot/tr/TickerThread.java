@@ -16,19 +16,17 @@ public class TickerThread implements Runnable {
 
     private int timeWait;
 
-    private boolean runned = false;
+    private volatile boolean runned = false;
 
-    private boolean correct;
+    private volatile boolean correct;
 
-    private AbstractTicker ticker;
+    private final AbstractTicker ticker;
 
     public TickerThread(AbstractTicker ticker) {
-
         this(ticker, 1000);
     }
 
     public TickerThread(AbstractTicker ticker, int period) {
-
         timeWait = period;
         this.ticker = ticker;
     }
@@ -64,17 +62,14 @@ public class TickerThread implements Runnable {
     }
 
     public boolean isRunned() {
-
         return runned;
     }
 
     public boolean isCorrect() {
-
         return correct;
     }
 
     public AbstractTicker getTicker() {
-
         return ticker;
     }
 }

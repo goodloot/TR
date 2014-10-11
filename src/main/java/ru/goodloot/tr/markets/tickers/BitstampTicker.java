@@ -13,11 +13,11 @@ import ru.goodloot.tr.markets.Bitstamp;
 public class BitstampTicker extends AbstractTicker {
 
     @Override
-    protected void setNewPrices() {
+    protected void setCandidates() {
 
         JSONObject jsonObjBitstamp = Bitstamp.callFunc("ticker");
 
-        tickerBuy = Double.parseDouble((jsonObjBitstamp.get("ask")).toString());
-        tickerSell = Double.parseDouble((jsonObjBitstamp.get("bid")).toString());
+        candidateBuy = Double.parseDouble((jsonObjBitstamp.get("ask")).toString());
+        candidateSell = Double.parseDouble((jsonObjBitstamp.get("bid")).toString());
     }
 }

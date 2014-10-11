@@ -16,50 +16,48 @@ public abstract class AbstractTicker extends AbstractUtils {
 
     private final static double DEFAULT_NOT_TRUSTED_PRICE_CHANGE = 0.03;
 
-    protected volatile double tickerBuy = -1;
+    private volatile double tickerBuy = 0;
 
-    protected volatile double tickerSell = -1;
+    private volatile double tickerSell = 0;
 
-    protected double prevTickerBuy = 0;
+    protected double candidateBuy = 0;
 
-    protected double prevTickerSell = 0;
+    protected double candidateSell = 0;
 
     public int setTicker() {
 
-        prevTickerBuy = tickerBuy;
-        prevTickerSell = tickerSell;
+        setCandidates();
 
-        setNewPrices();
-
-        if (prevTickerBuy == -1 && prevTickerSell == -1) {
-            /**
-             * В этом случае возможно тоже надо проверять тикер на вшивость
-             */
+        if (isTrustedPriceChange()) {
+            synchronized (this) {
+                tickerBuy = candidateBuy;
+                tickerSell = candidateSell;
+            }
             return 1;
         } else {
-            if (isBadPriceChange()) {
-
-                logger.writeAndOut("errs.txt", getClass().getSimpleName()
-                                + " notTrustedPriceChange", tickerBuy, tickerSell);
-
-                tickerBuy = prevTickerBuy;
-                tickerSell = prevTickerSell;
-                return 0;
-            } else {
-                return 1;
-            }
+            logger.writeAndOut("errs.txt", getClass().getSimpleName()
+                            + " notTrustedPriceChange", candidateBuy, candidateSell);
+            return 0;
         }
+
     }
 
-    abstract protected void setNewPrices();
+    abstract protected void setCandidates();
 
     /**
      * @return true - not trusted price change, false - ok
      */
-    protected boolean isBadPriceChange() {
-        return Math.abs((tickerBuy + tickerSell - prevTickerBuy - prevTickerSell)
-                        / (prevTickerBuy + prevTickerSell)) > DEFAULT_NOT_TRUSTED_PRICE_CHANGE
-                        || tickerBuy < tickerSell;
+    protected boolean isTrustedPriceChange() {
+
+        // Возможно для первой итерации надо тоже сделать какую-то проверку
+        boolean firstIteration = tickerBuy == 0 && tickerSell == 0;
+
+        boolean notTrustedChanges =
+                        Math.abs((candidateBuy + candidateSell - tickerBuy - tickerSell)
+                                        / (tickerBuy + tickerSell)) > DEFAULT_NOT_TRUSTED_PRICE_CHANGE
+                                        || candidateBuy < candidateSell;
+
+        return firstIteration || !notTrustedChanges;
     }
 
     public double getTickerBuy() {

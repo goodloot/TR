@@ -13,11 +13,11 @@ import ru.goodloot.tr.markets.Bitfinex;
 public class BitfinexTicker extends AbstractTicker {
 
     @Override
-    protected void setNewPrices() {
+    protected void setCandidates() {
 
         JSONObject json = (JSONObject) Bitfinex.callFunc("btcusd", "ticker");
 
-        tickerBuy = Double.parseDouble(json.get("ask").toString());
-        tickerSell = Double.parseDouble(json.get("bid").toString());
+        candidateBuy = Double.parseDouble(json.get("ask").toString());
+        candidateSell = Double.parseDouble(json.get("bid").toString());
     }
 }
