@@ -1,6 +1,7 @@
 package ru.goodloot.tr.markets.pabots;
 
 import ru.goodloot.tr.enums.TradeTypes;
+import ru.goodloot.tr.exceptions.AnxExchangeException;
 import ru.goodloot.tr.objects.OrderInfo;
 import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.Utils;
@@ -44,20 +45,27 @@ public abstract class PAExchange extends AbstractPABot {
             i++;
             Utils.sleep(WAIT_TIMER_MS);
 
-            if (orderFlag == 1) {
-                processExistOrder();
-            }
+            try {
 
-            //            synchronized (PAExchange.class) {
-            //                try {
-            //                    wait();
-            //                } catch (InterruptedException e) {
-            //                    throw new RuntimeException(e);
-            //                }
-            //            }
+                if (orderFlag == 1) {
+                    processExistOrder();
+                }
 
-            if (slave.isCorrect() && master.isCorrect()) {
-                processTrading();
+                //            synchronized (PAExchange.class) {
+                //                try {
+                //                    wait();
+                //                } catch (InterruptedException e) {
+                //                    throw new RuntimeException(e);
+                //                }
+                //            }
+
+                if (slave.isCorrect() && master.isCorrect()) {
+                    processTrading();
+                }
+
+            } catch (AnxExchangeException e) {
+                logger.out("Anx exception occurs", e);
+                e.printStackTrace();
             }
 
             if (i % 600 == 1) {
