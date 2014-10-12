@@ -124,6 +124,8 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     public void initLastsRatio(String folder) {
 
+        logger.out("Start init lasts ratio from " + folder);
+
         try {
             String str = LoggerUtils.readLast(folder + "/buy.txt");
             lastBuyRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
