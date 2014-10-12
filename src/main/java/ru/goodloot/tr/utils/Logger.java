@@ -77,6 +77,10 @@ public class Logger {
         write(fileName, getFullStr(objs));
     }
 
+    public void writeWithoutDate(String fileName, Object... objs) {
+        write(fileName, getFullStrWithoutDate(objs));
+    }
+
     public void out(Object... objs) {
         System.out.println(getFullStr(objs));
     }

@@ -77,7 +77,7 @@ public abstract class PAExchange extends AbstractPABot {
 
             if (i % 5 == 1 && isWriteInLog()) {
 
-                logger.write("logNew.txt", Utils.getNonce(), masterTickerBuy,
+                logger.writeWithoutDate("logNew.txt", Utils.getNonce(), masterTickerBuy,
                                 masterTickerSell, slaveTickerBuy, slaveTickerSell);
 
                 prevMasterTickerBuy = masterTickerBuy;

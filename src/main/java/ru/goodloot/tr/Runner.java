@@ -36,7 +36,7 @@ public class Runner {
                         new PAKraken("krakenBitfinex.conf", getBitfinexTicker(),
                                         getKrakenTicker());
 
-        paKraken.threadStart();
+        paKraken.startThread();
     }
 
     public void runKrakenBitstamp() {
@@ -45,13 +45,13 @@ public class Runner {
                         new PAKraken("krakenBitstamp.conf", getBitstampTicker(),
                                         getKrakenTicker());
 
-        paKraken.threadStart();
+        paKraken.startThread();
     }
 
     public void runAnxBitfinex() {
 
         PAAnx paAnx = new PAAnx("anxBitfinex.conf", getBitfinexTicker(), getAnxTicker());
-        paAnx.threadStart();
+        paAnx.startThread();
     }
 
     public TickerThread getBitfinexTicker() {

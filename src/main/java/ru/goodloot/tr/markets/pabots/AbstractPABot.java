@@ -19,8 +19,6 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     private static final Logger logger = new Logger(AbstractPABot.class);
 
-    public T tradeExchange;
-
     protected double ratio;
 
     protected double prevRatio;
@@ -56,8 +54,6 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
     protected double delta;
 
     protected boolean readLast;
-
-    protected Thread t;
 
     protected String key;
 
@@ -100,11 +96,11 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         }
 
         if (!master.isRunned()) {
-            master.doit();
+            master.startThread();
         }
 
         if (!slave.isRunned()) {
-            slave.doit();
+            slave.startThread();
         }
 
         return true;
@@ -154,13 +150,10 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     @Override
     public void run() {
-
         doit();
     }
 
-    public void threadStart() {
-
-        t = new Thread(this);
-        t.start();
+    public void startThread() {
+        new Thread(this).start();
     }
 }

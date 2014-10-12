@@ -4,6 +4,7 @@
 package ru.goodloot.tr;
 
 import ru.goodloot.tr.markets.tickers.AbstractTicker;
+import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.Utils;
 
 /**
@@ -12,9 +13,9 @@ import ru.goodloot.tr.utils.Utils;
  */
 public class TickerThread implements Runnable {
 
-    private Thread t;
+    private static final Logger logger = new Logger(TickerThread.class);
 
-    private int timeWait;
+    private final int period;
 
     private volatile boolean runned = false;
 
@@ -22,15 +23,16 @@ public class TickerThread implements Runnable {
 
     private final AbstractTicker ticker;
 
+    public TickerThread(AbstractTicker ticker, int period) {
+        this.ticker = ticker;
+        this.period = period;
+    }
+
     public TickerThread(AbstractTicker ticker) {
         this(ticker, 1000);
     }
 
-    public TickerThread(AbstractTicker ticker, int period) {
-        timeWait = period;
-        this.ticker = ticker;
-    }
-
+    @Override
     public void run() {
 
         while (true) {
@@ -41,24 +43,29 @@ public class TickerThread implements Runnable {
                 // 1 - trusted price
                 correct = ticker.setTicker() == 1;
             } catch (RuntimeException e) {
-
-                System.out.println("Exception setting ticker: " + e.getMessage());
                 correct = false;
+                logger.out("Exception setting ticker "
+                                + ticker.getClass().getSimpleName());
+                e.printStackTrace();
             }
 
             timePassed = System.currentTimeMillis() - timePassed;
 
-            if (timePassed < timeWait) {
-                Utils.sleep(timeWait - timePassed);
+            if (timePassed < period) {
+                Utils.sleep(period - timePassed);
             }
         }
     }
 
-    public void doit() {
+    public void startThread() {
 
-        t = new Thread(this);
-        runned = true;
-        t.start();
+        if (!runned) {
+            runned = true;
+            new Thread(this).start();
+        } else {
+            throw new RuntimeException("That ticker thread already started "
+                            + ticker.getClass().getSimpleName());
+        }
     }
 
     public boolean isRunned() {
