@@ -51,13 +51,13 @@ public abstract class PAExchange extends AbstractPABot {
                     processExistOrder();
                 }
 
-                //                synchronized (this) {
-                //                    try {
-                //                        wait();
-                //                    } catch (InterruptedException e) {
-                //                        throw new RuntimeException(e);
-                //                    }
-                //                }
+                // synchronized (this) {
+                // try {
+                // wait();
+                // } catch (InterruptedException e) {
+                // throw new RuntimeException(e);
+                // }
+                // }
 
                 if (slave.isCorrect() && master.isCorrect()) {
                     processTrading();
@@ -92,31 +92,46 @@ public abstract class PAExchange extends AbstractPABot {
 
         OrderInfo info = exchange.getOrderInfo();
 
+        // Записываем, чтобы узнать разницу
+        double prevBtc = exchange.getBtcAmount();
+
         if (info.isOrderComplete()) {
+
+            exchange.setFundsAmount();
 
             strTradeLog = "Complete  " + strTradeLog;
         } else {
 
-            ratio =
-                            getRealRatio(exchange.getBtcAmount()
-                                            / exchange.getTotalInBtc(slaveTickerBuy));
-
             if (exchange.cancelLastOrder()) {
 
-                info = updateOrderInfo(info);
+                // info = updateOrderInfo(info);
+
+                /**
+                 * Если ордер отменился, устанавливаем баланс и пересчитываем ратио, делаем это
+                 * здесь чтобы получить самый актуальный баланс
+                 */
+                exchange.setFundsAmount();
+
+                ratio =
+                                getRealRatio(exchange.getBtcAmount()
+                                                / exchange.getTotalInBtc(slaveTickerBuy));
 
                 strTradeLog = "Cancelled " + strTradeLog;
             } else {
+
+                /**
+                 * Если отменить не смогли, считаем, что он полностью выполнился
+                 */
+                exchange.setFundsAmount();
 
                 strTradeLog = "NOT Cancelled " + strTradeLog;
             }
         }
 
-        logger.writeAndOut("tradesUser.txt", strTradeLog, info.getVolExecuted());
+        logger.writeAndOut("tradesUser.txt", strTradeLog, exchange.getBtcAmount()
+                        - prevBtc);
 
         orderFlag = 0;
-
-        exchange.setFundsAmount();
 
         setLastTrade();
     }
