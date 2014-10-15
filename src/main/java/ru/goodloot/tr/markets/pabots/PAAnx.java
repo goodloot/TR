@@ -46,23 +46,31 @@ public class PAAnx extends PAExchange {
             }
         }
 
-        Utils.sleep(2000);
-
         exchange.setFundsAmount();
 
         /**
          * Устанавливаем баланс и, если он поменялся, пересчитываем ратио
          */
         double realBtcDiff = exchange.getBtcAmount() - prevBtc;
+        double tempRatio = ratio;
 
         if (realBtcDiff != 0) {
 
-            double tempRatio = ratio;
             setRatioFromReal();
             logger.out("Btc amount WAS changed, real ratio setted", tempRatio, ratio);
         } else {
             logger.out("Btc amount NOT changed");
-            Utils.sleep(2000);
+            for (int i = 0; i < 15; i++) {
+
+                exchange.setFundsAmount();
+                realBtcDiff = exchange.getBtcAmount() - prevBtc;
+                if (realBtcDiff != 0) {
+                    logger.out("Btc amount WAS changed in loop, real ratio setted",
+                                    tempRatio, ratio, i);
+                    break;
+                }
+                Utils.sleep(1000);
+            }
         }
 
         logger.writeAndOut("tradesUser.txt", strTradeLog, realBtcDiff);
