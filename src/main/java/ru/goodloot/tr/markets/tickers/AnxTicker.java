@@ -15,7 +15,7 @@ public class AnxTicker extends AbstractTicker {
     @Override
     protected void setCandidates() {
 
-        JSONObject joTemp = jsonValue(Anx.callFunc("BTCHKD", "ticker"), "data");
+        JSONObject joTemp = jsonValue(Anx.callFunc("BTCUSD", "ticker"), "data");
 
         candidateBuy = Double.parseDouble(value(jsonValue(joTemp, "sell"), "value"));
         candidateSell = Double.parseDouble(value(jsonValue(joTemp, "buy"), "value"));

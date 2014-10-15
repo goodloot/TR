@@ -176,7 +176,7 @@ public class Anx extends TradableExchange {
             AccountInfo ai = exchange.getPollingAccountService().getAccountInfo();
 
             setBtcAmount(ai.getBalance("BTC").doubleValue());
-            setUsdAmount(ai.getBalance("HKD").doubleValue() * getUsdCource());
+            setUsdAmount(ai.getBalance("USD").doubleValue() * getUsdCource());
 
             logger.out("SetFundsAmount called", "btc: " + getBtcAmount(), "usd: "
                             + getUsdAmount());
@@ -219,7 +219,7 @@ public class Anx extends TradableExchange {
         argsOrderResult.put("orderId", orderId);
 
         JSONObject json =
-                        callMethod("BTCHKD/money/order/result", argsOrderResult, API_V2);
+                        callMethod("BTCUSD/money/order/result", argsOrderResult, API_V2);
         String exec = value(jsonValue(jsonValue(json, "data"), "total_amount"), "value");
 
         return new OrderInfo(orderId, true, exec == null ? null : Double.valueOf(exec));
@@ -244,7 +244,7 @@ public class Anx extends TradableExchange {
 
             Ticker t =
                             exchange.getPollingMarketDataService().getTicker(
-                                            CurrencyPair.BTC_HKD, null);
+                                            CurrencyPair.BTC_USD, null);
 
             BigDecimal price = t.getAsk();
             depthPrice = price.toString();
@@ -262,7 +262,7 @@ public class Anx extends TradableExchange {
             BigDecimal volume = new BigDecimal(diffBtc, new MathContext(6));
 
             LimitOrder lo =
-                            new LimitOrder(OrderType.BID, volume, CurrencyPair.BTC_HKD,
+                            new LimitOrder(OrderType.BID, volume, CurrencyPair.BTC_USD,
                                             null, Utils.now(), price);
 
             logger.out("Placing limit buy order", "vol: " + volume, "price: " + price);
@@ -288,7 +288,7 @@ public class Anx extends TradableExchange {
 
             Ticker t =
                             exchange.getPollingMarketDataService().getTicker(
-                                            CurrencyPair.BTC_HKD, null);
+                                            CurrencyPair.BTC_USD, null);
 
             BigDecimal price = t.getBid();
             depthPrice = price.toString();
@@ -303,7 +303,7 @@ public class Anx extends TradableExchange {
             BigDecimal volume = new BigDecimal(Math.abs(diffBtc), new MathContext(6));
 
             LimitOrder lo =
-                            new LimitOrder(OrderType.ASK, volume, CurrencyPair.BTC_HKD,
+                            new LimitOrder(OrderType.ASK, volume, CurrencyPair.BTC_USD,
                                             null, Utils.now(), price);
 
             logger.out("Placing limit sell order", "vol: " + volume, "price: " + price);
