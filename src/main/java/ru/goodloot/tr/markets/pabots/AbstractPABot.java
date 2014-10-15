@@ -33,21 +33,6 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     protected double diffBtc;
 
-    // protected double masterTickerBuy;
-    //
-    // protected double masterTickerSell;
-    //
-    // protected double slaveTickerBuy;
-    //
-    // protected double slaveTickerSell;
-    //
-    // protected double prevMasterTickerBuy;
-    //
-    // protected double prevMasterTickerSell;
-    //
-    // protected double prevSlaveTickerBuy;
-    //
-    // protected double prevSlaveTickerSell;
     protected final PAPriceInfo price = new PAPriceInfo();
 
     protected final PAPriceInfo prevPrice = new PAPriceInfo();
