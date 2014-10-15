@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.markets.TradableExchange;
+import ru.goodloot.tr.markets.tickers.AbstractTicker;
+import ru.goodloot.tr.objects.PAPriceInfo;
 import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.LoggerUtils;
 
@@ -17,7 +19,7 @@ import ru.goodloot.tr.utils.LoggerUtils;
  */
 public abstract class AbstractPABot<T extends TradableExchange> implements Runnable {
 
-    private static final Logger logger = new Logger(AbstractPABot.class);
+    protected final Logger logger;
 
     protected double ratio;
 
@@ -31,21 +33,24 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     protected double diffBtc;
 
-    protected double masterTickerBuy;
+    // protected double masterTickerBuy;
+    //
+    // protected double masterTickerSell;
+    //
+    // protected double slaveTickerBuy;
+    //
+    // protected double slaveTickerSell;
+    //
+    // protected double prevMasterTickerBuy;
+    //
+    // protected double prevMasterTickerSell;
+    //
+    // protected double prevSlaveTickerBuy;
+    //
+    // protected double prevSlaveTickerSell;
+    protected final PAPriceInfo price = new PAPriceInfo();
 
-    protected double masterTickerSell;
-
-    protected double slaveTickerBuy;
-
-    protected double slaveTickerSell;
-
-    protected double prevMasterTickerBuy;
-
-    protected double prevMasterTickerSell;
-
-    protected double prevSlaveTickerBuy;
-
-    protected double prevSlaveTickerSell;
+    protected final PAPriceInfo prevPrice = new PAPriceInfo();
 
     protected double kMin;
 
@@ -53,27 +58,36 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     protected double delta;
 
-    protected boolean readLast;
+    protected boolean readLastsRatio;
 
-    protected String key;
+    private String key;
 
-    protected String secret;
+    private String secret;
 
     protected TradableExchange exchange;
 
-    protected TickerThread master;
+    protected final TickerThread master;
 
-    protected TickerThread slave;
+    protected final TickerThread slave;
 
-    protected String confName;
+    private final String confName;
+
+    private final String folder;
 
     abstract public void doit();
 
-    abstract public String getFolder();
+    protected AbstractPABot(String confName, TickerThread master, TickerThread slave) {
 
-    abstract protected String getApiConfName();
+        this.confName = confName;
+        this.master = master;
+        this.slave = slave;
+        this.folder = getSlaveName() + getMasterName();
+        this.logger = new Logger(this.folder);
 
-    protected boolean init() {
+        init();
+    }
+
+    private void init() {
 
         setKeySecret();
 
@@ -85,10 +99,10 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         kMin = Double.valueOf(args[0]);
         kMax = Double.valueOf(args[1]);
         delta = Double.valueOf(args[2]);
-        readLast = Boolean.parseBoolean(args[3]);
+        readLastsRatio = Boolean.parseBoolean(args[3]);
 
-        if (readLast) {
-            initLastsRatio(getFolder());
+        if (readLastsRatio) {
+            initLastsRatio(folder);
         } else {
 
             lastSellRatio = Double.parseDouble(args[4]);
@@ -102,8 +116,6 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         if (!slave.isRunned()) {
             slave.startThread();
         }
-
-        return true;
     }
 
     private void setKeySecret() {
@@ -143,11 +155,8 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         }
     }
 
-    protected boolean isWriteInLog() {
-
-        return !(masterTickerBuy == prevMasterTickerBuy
-                        && masterTickerSell == prevMasterTickerSell
-                        && slaveTickerBuy == prevSlaveTickerBuy && slaveTickerSell == prevSlaveTickerSell);
+    protected final boolean isWriteInLog() {
+        return !(price.isSame(prevPrice));
     }
 
     @Override
@@ -157,5 +166,38 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     public void startThread() {
         new Thread(this).start();
+    }
+
+    private String getApiConfName() {
+        return getSlaveName() + ".conf";
+    }
+
+    private String getMasterName() {
+        return getTickerExchangeName(master.getTicker().getClass());
+    }
+
+    private String getSlaveName() {
+        return getTickerExchangeName(slave.getTicker().getClass());
+    }
+
+    private <S extends AbstractTicker> String getTickerExchangeName(Class<S> clazz) {
+        String s = clazz.getSimpleName();
+        return s.substring(0, s.indexOf("Ticker"));
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public String getConfName() {
+        return confName;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getSecret() {
+        return secret;
     }
 }

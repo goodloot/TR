@@ -1,9 +1,8 @@
 package ru.goodloot.tr.markets;
 
 import java.util.Map;
-import ru.goodloot.tr.objects.OrderInfo;
 import static ru.goodloot.tr.markets.Exchange.sendGet;
-import ru.goodloot.tr.markets.TradableExchange;
+import ru.goodloot.tr.objects.OrderInfo;
 
 /**
  * @author Artur M.
@@ -29,9 +28,7 @@ public class Hitbtc extends TradableExchange {
         return null;
     }
 
-    public boolean setFundsAmount() {
-        return true;
-    }
+    public void setFundsAmount() {}
 
     public OrderInfo getOrderInfo() {
         return null;

@@ -12,7 +12,7 @@ import ru.goodloot.tr.utils.Logger;
  */
 public abstract class AbstractTicker extends AbstractUtils {
 
-    private final static Logger logger = new Logger(BitfinexTicker.class);
+    private final static Logger logger = new Logger(AbstractTicker.class);
 
     private final static double DEFAULT_NOT_TRUSTED_PRICE_CHANGE = 0.03;
 
@@ -54,10 +54,14 @@ public abstract class AbstractTicker extends AbstractUtils {
 
         boolean notTrustedChanges =
                         Math.abs((candidateBuy + candidateSell - tickerBuy - tickerSell)
-                                        / (tickerBuy + tickerSell)) > DEFAULT_NOT_TRUSTED_PRICE_CHANGE
+                                        / (tickerBuy + tickerSell)) > getTrustedPriceChange()
                                         || candidateBuy < candidateSell;
 
         return firstIteration || !notTrustedChanges;
+    }
+
+    protected double getTrustedPriceChange() {
+        return DEFAULT_NOT_TRUSTED_PRICE_CHANGE;
     }
 
     public double getTickerBuy() {

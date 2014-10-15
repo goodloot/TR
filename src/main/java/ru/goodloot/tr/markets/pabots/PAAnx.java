@@ -3,7 +3,6 @@ package ru.goodloot.tr.markets.pabots;
 import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.markets.Anx;
 import ru.goodloot.tr.objects.OrderInfo;
-import ru.goodloot.tr.utils.Logger;
 
 /**
  * @author Artur M.
@@ -15,24 +14,9 @@ public class PAAnx extends PAExchange {
 
     public PAAnx(String confName, TickerThread master, TickerThread slave) {
 
-        this.confName = confName;
-        this.master = master;
-        this.slave = slave;
+        super(confName, master, slave);
 
-        init();
-    }
-
-    @Override
-    protected boolean init() {
-
-        Logger logger = new Logger(getFolder());
-        setLogger(logger);
-
-        super.init();
-
-        exchange = new Anx(secret, key);
-
-        return true;
+        exchange = new Anx(getSecret(), getKey());
     }
 
     @Override
@@ -41,19 +25,40 @@ public class PAAnx extends PAExchange {
     }
 
     @Override
-    public String getFolder() {
+    protected void processExistOrderSpecifics(OrderInfo info) {
 
-        return "anx" + getMasterName();
-    }
+        // Записываем, чтобы узнать разницу
+        double prevBtc = exchange.getBtcAmount();
 
-    @Override
-    protected String getApiConfName() {
+        if (info.isOrderComplete()) {
 
-        return "anx.conf";
-    }
+            strTradeLog = "Complete  " + strTradeLog;
+        } else {
+            if (exchange.cancelLastOrder()) {
 
-    @Override
-    public double getUsdCource() {
-        return Anx.HKD_USD;
+                strTradeLog = "Cancelled " + strTradeLog;
+            } else {
+                /**
+                 * Если отменить не смогли, считаем, что он полностью выполнился
+                 */
+                strTradeLog = "NOT Cancelled " + strTradeLog;
+            }
+        }
+
+        exchange.setFundsAmount();
+
+        /**
+         * Устанавливаем баланс и, если он поменялся, пересчитываем ратио
+         */
+        double realBtcDiff = exchange.getBtcAmount() - prevBtc;
+
+        if (realBtcDiff != 0) {
+
+            double tempRatio = ratio;
+            setRatioFromReal();
+            logger.out("Btc amount was changed, real ratio setted", tempRatio, ratio);
+        }
+
+        logger.writeAndOut("tradesUser.txt", strTradeLog, realBtcDiff);
     }
 }

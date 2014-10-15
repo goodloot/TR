@@ -39,7 +39,7 @@ public abstract class TradableExchange extends Exchange {
 
     public TradableExchange(String secret, String key) {
 
-        nonce = Utils.getNonce();
+        this.nonce = Utils.getNonce();
         this.apiSecret = secret;
         this.apiKey = key;
     }
@@ -97,7 +97,7 @@ public abstract class TradableExchange extends Exchange {
         return 1 - getFee();
     }
 
-    abstract public boolean setFundsAmount();
+    abstract public void setFundsAmount();
 
     abstract public OrderInfo getOrderInfo();
 
@@ -106,6 +106,10 @@ public abstract class TradableExchange extends Exchange {
     abstract public boolean tradeBuyMargin(double diffBtc);
 
     abstract public boolean tradeSellMargin(double diffBtc);
+
+    public double getUsdCource() {
+        throw new NotImplementedException();
+    }
 
     public String getApiSecret() {
 

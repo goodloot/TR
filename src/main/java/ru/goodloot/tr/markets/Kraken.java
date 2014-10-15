@@ -145,7 +145,7 @@ public class Kraken extends TradableExchange {
     }
 
     @Override
-    public boolean setFundsAmount() {
+    public void setFundsAmount() {
 
         JSONObject jsonObj = callMethod("Balance", null);
 
@@ -153,7 +153,6 @@ public class Kraken extends TradableExchange {
 
         setBtcAmount(Double.parseDouble(jsonObjTemp.get("XXBT").toString()));
         setUsdAmount(Double.parseDouble(jsonObjTemp.get("ZEUR").toString()) * EUR_USD);
-        return true;
     }
 
     public boolean tradeBuyMargin(double diffBtc) {

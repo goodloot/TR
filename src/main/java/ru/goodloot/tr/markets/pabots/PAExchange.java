@@ -1,11 +1,10 @@
 package ru.goodloot.tr.markets.pabots;
 
+import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.enums.TradeTypes;
 import ru.goodloot.tr.exceptions.AnxExchangeException;
 import ru.goodloot.tr.objects.OrderInfo;
-import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.Utils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author Artur M.
@@ -15,11 +14,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public abstract class PAExchange extends AbstractPABot {
 
-    private Logger logger;
-
     private int orderFlag = 0;
 
-    private String strTradeLog = "";
+    protected String strTradeLog = "";
 
     private TradeTypes lastTrade;
 
@@ -27,17 +24,18 @@ public abstract class PAExchange extends AbstractPABot {
 
     public static final int WAIT_TIMER_MS = 200;
 
+    protected PAExchange(String confName, TickerThread master, TickerThread slave) {
+        super(confName, master, slave);
+    }
+
     @Override
     public void doit() {
 
         long i = 0;
 
-        if (!exchange.setFundsAmount()) {
-            logger.writeAndOut("errs.txt", "Can't setFundsAmount!");
-            return;
-        }
+        exchange.setFundsAmount();
 
-        logger.writeAndOut("tradesUser.txt", "Runned", kMin, kMax, delta, readLast,
+        logger.writeAndOut("tradesUser.txt", "Runned", kMin, kMax, delta, readLastsRatio,
                         lastSellRatio, lastBuyRatio);
 
         while (true) {
@@ -51,14 +49,6 @@ public abstract class PAExchange extends AbstractPABot {
                     processExistOrder();
                 }
 
-                // synchronized (this) {
-                // try {
-                // wait();
-                // } catch (InterruptedException e) {
-                // throw new RuntimeException(e);
-                // }
-                // }
-
                 if (slave.isCorrect() && master.isCorrect()) {
                     processTrading();
                 }
@@ -69,21 +59,15 @@ public abstract class PAExchange extends AbstractPABot {
             }
 
             if (i % 600 == 1) {
-                logger.out(masterTickerBuy, masterTickerSell, slaveTickerBuy,
-                                slaveTickerSell, Utils.round(prevRatio, 6),
-                                Utils.round(ratio, 6), exchange.getBtcAmount(),
+                logger.out(price, prevRatio, ratio, exchange.getBtcAmount(),
                                 exchange.getUsdAmount());
             }
 
             if (i % 5 == 1 && isWriteInLog()) {
 
-                logger.writeWithoutDate("logNew.txt", Utils.getNonce(), masterTickerBuy,
-                                masterTickerSell, slaveTickerBuy, slaveTickerSell);
-
-                prevMasterTickerBuy = masterTickerBuy;
-                prevMasterTickerSell = masterTickerSell;
-                prevSlaveTickerBuy = slaveTickerBuy;
-                prevSlaveTickerSell = slaveTickerSell;
+                logger.writeWithoutDate("logNew.txt", Utils.getNonce(), price);
+                // Записываем предыдущую цену чтобы знать, поменялась ли она
+                prevPrice.setPrice(price);
             }
         }
     }
@@ -92,48 +76,48 @@ public abstract class PAExchange extends AbstractPABot {
 
         OrderInfo info = exchange.getOrderInfo();
 
-        // Записываем, чтобы узнать разницу
-        double prevBtc = exchange.getBtcAmount();
+        processExistOrderSpecifics(info);
 
+        orderFlag = 0;
+
+        setLastTrade();
+    }
+
+    /**
+     * Эту реализацию лучше переопередлять в предках
+     * 
+     * @param info
+     *        информация об ордере
+     */
+    protected void processExistOrderSpecifics(OrderInfo info) {
+
+        /**
+         * TODO: Доработать надо концепцию
+         */
         if (info.isOrderComplete()) {
-
-            exchange.setFundsAmount();
 
             strTradeLog = "Complete  " + strTradeLog;
         } else {
-
             if (exchange.cancelLastOrder()) {
-
-                // info = updateOrderInfo(info);
-
-                /**
-                 * Если ордер отменился, устанавливаем баланс и пересчитываем ратио, делаем это
-                 * здесь чтобы получить самый актуальный баланс
-                 */
-                exchange.setFundsAmount();
-
-                ratio =
-                                getRealRatio(exchange.getBtcAmount()
-                                                / exchange.getTotalInBtc(slaveTickerBuy));
 
                 strTradeLog = "Cancelled " + strTradeLog;
             } else {
-
-                /**
-                 * Если отменить не смогли, считаем, что он полностью выполнился
-                 */
-                exchange.setFundsAmount();
 
                 strTradeLog = "NOT Cancelled " + strTradeLog;
             }
         }
 
-        logger.writeAndOut("tradesUser.txt", strTradeLog, exchange.getBtcAmount()
-                        - prevBtc);
+        exchange.setFundsAmount();
 
-        orderFlag = 0;
+        setRatioFromReal();
 
-        setLastTrade();
+        logger.writeAndOut("tradesUser.txt", strTradeLog);
+    }
+
+    protected final void setRatioFromReal() {
+        ratio =
+                        getRealRatio(exchange.getBtcAmount()
+                                        / exchange.getTotalInBtc(price.getSlaveBuy()));
     }
 
     protected OrderInfo updateOrderInfo(OrderInfo info) {
@@ -156,23 +140,25 @@ public abstract class PAExchange extends AbstractPABot {
 
     private void processTrading() {
 
-        masterTickerBuy = master.getTicker().getTickerBuy();
-        masterTickerSell = master.getTicker().getTickerSell();
+        double masterBuy = master.getTicker().getTickerBuy();
+        double masterSell = master.getTicker().getTickerSell();
+        double slaveBuy = slave.getTicker().getTickerBuy() * getUsdCource();
+        double slaveSell = slave.getTicker().getTickerSell() * getUsdCource();
 
-        slaveTickerBuy = slave.getTicker().getTickerBuy() * getUsdCource();
-        slaveTickerSell = slave.getTicker().getTickerSell() * getUsdCource();
+        price.setMasterBuy(masterBuy);
+        price.setMasterSell(masterSell);
+        price.setSlaveBuy(slaveBuy);
+        price.setSlaveSell(slaveSell);
 
-        double totalInBtc = exchange.getTotalInBtc(slaveTickerBuy);
+        double totalInBtc = exchange.getTotalInBtc(slaveBuy);
 
-        ratio = Math.log(masterTickerSell / slaveTickerBuy);
+        ratio = Math.log(masterSell / slaveBuy);
         expectedBtc = totalInBtc * getExpectedBtc(ratio);
         diffBtc = expectedBtc - exchange.getBtcAmount();
 
         if (Math.abs(ratio - lastSellRatio) > delta && diffBtc > MIN_DIFF_BTC) {
 
-            logger.out("Buy sign", masterTickerBuy, masterTickerSell, slaveTickerBuy,
-                            slaveTickerSell, Utils.round(prevRatio, 6),
-                            Utils.round(ratio, 6), exchange.getBtcAmount(),
+            logger.out("Buy sign", price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
 
             if (exchange.tradeBuyMargin(diffBtc)) {
@@ -183,22 +169,20 @@ public abstract class PAExchange extends AbstractPABot {
                 strTradeLog =
                                 logger.getFullStrWithoutDate("Buy",
                                                 exchange.getDepthPrice(), diffBtc,
-                                                masterTickerSell, slaveTickerBuy, ratio);
+                                                masterSell, slaveBuy, ratio);
             }
 
         } else {
 
             prevRatio = ratio;
-            ratio = Math.log(masterTickerBuy / slaveTickerSell);
+            ratio = Math.log(masterBuy / slaveSell);
             expectedBtc = totalInBtc * getExpectedBtc(ratio);
             diffBtc = expectedBtc - exchange.getBtcAmount();
 
             if (Math.abs(lastBuyRatio - ratio) > delta && diffBtc < -MIN_DIFF_BTC) {
 
-                logger.out("Sell sign", masterTickerBuy, masterTickerSell,
-                                slaveTickerBuy, slaveTickerSell,
-                                Utils.round(prevRatio, 6), Utils.round(ratio, 6),
-                                exchange.getBtcAmount(), exchange.getUsdAmount());
+                logger.out("Sell sign", price, prevRatio, ratio, exchange.getBtcAmount(),
+                                exchange.getUsdAmount());
 
                 if (exchange.tradeSellMargin(diffBtc)) {
 
@@ -208,15 +192,14 @@ public abstract class PAExchange extends AbstractPABot {
                     strTradeLog =
                                     logger.getFullStrWithoutDate("Sell",
                                                     exchange.getDepthPrice(), diffBtc,
-                                                    masterTickerBuy, slaveTickerSell,
-                                                    ratio);
+                                                    masterBuy, slaveSell, ratio);
                 }
             }
         }
     }
 
     public double getUsdCource() {
-        throw new NotImplementedException();
+        return exchange.getUsdCource();
     }
 
     protected double getExpectedBtc(double k) {
@@ -231,21 +214,6 @@ public abstract class PAExchange extends AbstractPABot {
     }
 
     protected double getRealRatio(double realBtc) {
-
         return (kMax - kMin) * expectedBtc + kMin;
-    }
-
-    protected String getMasterName() {
-
-        String s = master.getClass().getSimpleName();
-        return s.substring(0, s.indexOf("Ticker"));
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
     }
 }

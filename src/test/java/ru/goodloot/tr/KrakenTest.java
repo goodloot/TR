@@ -37,7 +37,7 @@ public class KrakenTest {
 
     @Test
     public void testKrakenBalance() {
-        System.out.println(k.setFundsAmount());
+        k.setFundsAmount();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class KrakenTest {
 
     @Test
     public void testSetFunds() {
-        Assert.assertTrue(k.setFundsAmount());
+        k.setFundsAmount();
         System.out.println(k.getBtcAmount());
         System.out.println(k.getUsdAmount());
     }

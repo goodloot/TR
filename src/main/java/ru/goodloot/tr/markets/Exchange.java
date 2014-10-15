@@ -43,7 +43,7 @@ public abstract class Exchange extends AbstractUtils {
             return parser.parse(response.toString());
 
         } catch (IOException | ParseException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

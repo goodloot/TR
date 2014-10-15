@@ -20,4 +20,9 @@ public class AnxTicker extends AbstractTicker {
         candidateBuy = Double.parseDouble(value(jsonValue(joTemp, "sell"), "value"));
         candidateSell = Double.parseDouble(value(jsonValue(joTemp, "buy"), "value"));
     }
+
+    @Override
+    protected double getTrustedPriceChange() {
+        return 0.035;
+    }
 }

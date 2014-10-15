@@ -4,7 +4,6 @@
 package ru.goodloot.tr;
 
 import ru.goodloot.tr.markets.pabots.PAAnx;
-import ru.goodloot.tr.markets.pabots.PAKraken;
 import ru.goodloot.tr.markets.tickers.AnxTicker;
 import ru.goodloot.tr.markets.tickers.BitfinexTicker;
 import ru.goodloot.tr.markets.tickers.BitstampTicker;
@@ -30,24 +29,23 @@ public class Runner {
 
     private TickerThread anxTicker;
 
-    public void runKrakenBitfinex() {
-
-        PAKraken paKraken =
-                        new PAKraken("krakenBitfinex.conf", getBitfinexTicker(),
-                                        getKrakenTicker());
-
-        paKraken.startThread();
-    }
-
-    public void runKrakenBitstamp() {
-
-        PAKraken paKraken =
-                        new PAKraken("krakenBitstamp.conf", getBitstampTicker(),
-                                        getKrakenTicker());
-
-        paKraken.startThread();
-    }
-
+    // public void runKrakenBitfinex() {
+    //
+    // PAKraken paKraken =
+    // new PAKraken("krakenBitfinex.conf", getBitfinexTicker(),
+    // getKrakenTicker());
+    //
+    // paKraken.startThread();
+    // }
+    //
+    // public void runKrakenBitstamp() {
+    //
+    // PAKraken paKraken =
+    // new PAKraken("krakenBitstamp.conf", getBitstampTicker(),
+    // getKrakenTicker());
+    //
+    // paKraken.startThread();
+    // }
     public void runAnxBitfinex() {
 
         PAAnx paAnx = new PAAnx("anxBitfinex.conf", getBitfinexTicker(), getAnxTicker());

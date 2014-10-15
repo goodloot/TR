@@ -124,9 +124,6 @@ public class Anx extends TradableExchange {
             mac.update(postData.getBytes());
 
             String url = "https://anxpro.com/api/" + apiVersion + "/" + method;
-            // String url =
-            // "https://private-anon-487d5f9e8-anxv3.apiary-mock.com/api/"
-            // + apiVersion + "/" + method;
 
             URL obj = new URL(url);
             HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
@@ -141,8 +138,6 @@ public class Anx extends TradableExchange {
             con.setRequestProperty("Content-Type",
                             API_V3.equals(apiVersion) ? "application/json"
                                             : "application/x-www-form-urlencoded");
-            // con.setRequestProperty("User-Agent",
-            // "ResCU JDK/6 AppleWebKit/535.7 Chrome/16.0.912.36 Safari/535.7");
             con.setRequestProperty("User-Agent", USER_AGENT);
 
             con.setDoOutput(true);
@@ -174,14 +169,14 @@ public class Anx extends TradableExchange {
     }
 
     @Override
-    public boolean setFundsAmount() {
+    public void setFundsAmount() {
 
         try {
 
             AccountInfo ai = exchange.getPollingAccountService().getAccountInfo();
 
             setBtcAmount(ai.getBalance("BTC").doubleValue());
-            setUsdAmount(ai.getBalance("HKD").doubleValue() * HKD_USD);
+            setUsdAmount(ai.getBalance("HKD").doubleValue() * getUsdCource());
 
             logger.out("SetFundsAmount called", "btc: " + getBtcAmount(), "usd: "
                             + getUsdAmount());
@@ -190,14 +185,10 @@ public class Anx extends TradableExchange {
                         | NotYetImplementedForExchangeException e) {
             throw new AnxExchangeException(e);
         }
-
-        return true;
     }
 
     @Override
     public OrderInfo getOrderInfo() {
-
-        logger.out("Call getOrderInfo " + lastOrderId);
 
         LimitOrder order = null;
 
@@ -257,12 +248,15 @@ public class Anx extends TradableExchange {
 
             BigDecimal price = t.getAsk();
             depthPrice = price.toString();
-            //            BigDecimal price = new BigDecimal("2000");
+            // BigDecimal price = new BigDecimal("2000");
 
             double usdAmount = getUsdAmount();
 
-            if (diffBtc * price.doubleValue() * HKD_USD > usdAmount * feeMultiplier()) {
-                diffBtc = usdAmount / HKD_USD / price.doubleValue() * feeMultiplier();
+            if (diffBtc * price.doubleValue() * getUsdCource() > usdAmount
+                            * feeMultiplier()) {
+                diffBtc =
+                                usdAmount / getUsdCource() / price.doubleValue()
+                                                * feeMultiplier();
             }
 
             BigDecimal volume = new BigDecimal(diffBtc, new MathContext(6));
@@ -298,7 +292,7 @@ public class Anx extends TradableExchange {
 
             BigDecimal price = t.getBid();
             depthPrice = price.toString();
-            //            BigDecimal price = new BigDecimal("4000");
+            // BigDecimal price = new BigDecimal("4000");
 
             double btcAmount = getBtcAmount();
 
@@ -335,5 +329,10 @@ public class Anx extends TradableExchange {
     @Override
     public double getFee() {
         return 0.003;
+    }
+
+    @Override
+    public double getUsdCource() {
+        return 1;
     }
 }

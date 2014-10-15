@@ -7,7 +7,7 @@ import java.io.*;
 
 public class LoggerUtils {
 
-    static boolean isWin = Utils.isWin();
+    static public String newLine = getNewline();
 
     static public void write(String fileName, String str) {
 
@@ -21,8 +21,7 @@ public class LoggerUtils {
                 file.createNewFile();
             }
             FileOutputStream f = new FileOutputStream(file, true);
-            // Only for Windows
-            f.write(("\r\n" + str).getBytes());
+            f.write((newLine + str).getBytes());
         } catch (IOException e) {
             System.out.println("An I/O Exception Occured" + e.toString());
         }
@@ -30,14 +29,14 @@ public class LoggerUtils {
 
     static public void writeAndOut(String fileName, String str) {
 
-        LoggerUtils.write(fileName, str);
+        write(fileName, str);
         System.out.println(str);
     }
 
     static public void writeAndWrite(String file1Name, String file2Name, String str) {
 
-        LoggerUtils.write(file1Name, str);
-        LoggerUtils.write(file2Name, str);
+        write(file1Name, str);
+        write(file2Name, str);
     }
 
     static public String readLast(String fileName) {
@@ -91,10 +90,38 @@ public class LoggerUtils {
 
     static public String getNewline() {
 
-        if (isWin) {
+        if (Utils.isWin()) {
             return "\r\n";
         } else {
             return "\n";
         }
+    }
+
+    static private String getFullStr(String date, Object... objs) {
+
+        StringBuilder sb = new StringBuilder(date);
+        for (Object o : objs) {
+            if (o instanceof Double) {
+                sb.append((o + "       ").substring(0, 7));
+            } else {
+                sb.append(o);
+            }
+            if (o != objs[objs.length - 1]) {
+                sb.append("\t");
+            }
+        }
+        return sb.toString();
+    }
+
+    static public String getFullStr(Object... objs) {
+        return getFullStr(Utils.getDateString() + "\t", objs);
+    }
+
+    static public String getFullStrWithoutDate(Object... objs) {
+        return getFullStr("", objs);
+    }
+
+    static public void out(Object... objs) {
+        System.out.println(getFullStr(objs));
     }
 }
