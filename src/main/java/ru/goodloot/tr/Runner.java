@@ -15,7 +15,7 @@ import ru.goodloot.tr.markets.tickers.KrakenTicker;
  * Description ...
  * 
  * 
- * @author Mukhametyanov Artur
+ * @author Artur M.
  * @created 20 авг. 2014 г.
  * 
  */

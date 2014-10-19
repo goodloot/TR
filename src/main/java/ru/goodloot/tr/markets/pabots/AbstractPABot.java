@@ -9,7 +9,7 @@ import java.io.IOException;
 import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.markets.TradableExchange;
 import ru.goodloot.tr.markets.tickers.AbstractTicker;
-import ru.goodloot.tr.objects.PAPriceInfo;
+import ru.goodloot.tr.objects.PAPriceValue;
 import ru.goodloot.tr.utils.Logger;
 import ru.goodloot.tr.utils.LoggerUtils;
 
@@ -33,9 +33,9 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     protected double diffBtc;
 
-    protected final PAPriceInfo price = new PAPriceInfo();
+    protected final PAPriceValue price = new PAPriceValue();
 
-    protected final PAPriceInfo prevPrice = new PAPriceInfo();
+    protected final PAPriceValue prevPrice = new PAPriceValue();
 
     protected double kMin;
 
@@ -55,6 +55,10 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     protected final TickerThread slave;
 
+    protected final AbstractTicker masterTicker;
+
+    protected final AbstractTicker slaveTicker;
+
     private final String confName;
 
     private final String folder;
@@ -68,6 +72,9 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         this.slave = slave;
         this.folder = getSlaveName() + getMasterName();
         this.logger = new Logger(this.folder);
+
+        this.masterTicker = master.getTicker();
+        this.slaveTicker = slave.getTicker();
 
         init();
     }
@@ -158,11 +165,11 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
     }
 
     private String getMasterName() {
-        return getTickerExchangeName(master.getTicker().getClass());
+        return getTickerExchangeName(masterTicker.getClass());
     }
 
     private String getSlaveName() {
-        return getTickerExchangeName(slave.getTicker().getClass());
+        return getTickerExchangeName(slaveTicker.getClass());
     }
 
     private <S extends AbstractTicker> String getTickerExchangeName(Class<S> clazz) {

@@ -53,6 +53,7 @@ public class Utils {
         try {
             Thread.sleep(millisec);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             LoggerUtils.writeAndOut("errs/errs.txt",
                             "Thread Interrunted! " + e.toString());
             e.printStackTrace();

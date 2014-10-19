@@ -23,6 +23,6 @@ public class AnxTicker extends AbstractTicker {
 
     @Override
     protected double getTrustedPriceChange() {
-        return 0.035;
+        return 0.04;
     }
 }

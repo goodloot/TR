@@ -4,7 +4,7 @@
 package ru.goodloot.tr;
 
 import ru.goodloot.tr.markets.tickers.AbstractTicker;
-import ru.goodloot.tr.utils.Logger;
+import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
 /**
@@ -13,13 +13,9 @@ import ru.goodloot.tr.utils.Utils;
  */
 public class TickerThread implements Runnable {
 
-    private static final Logger logger = new Logger(TickerThread.class);
-
     private final int period;
 
     private volatile boolean runned = false;
-
-    private volatile boolean correct;
 
     private final AbstractTicker ticker;
 
@@ -40,11 +36,11 @@ public class TickerThread implements Runnable {
             long timePassed = System.currentTimeMillis();
 
             try {
-                // 1 - trusted price
-                correct = ticker.setTicker() == 1;
+
+                ticker.setTicker();
+
             } catch (RuntimeException e) {
-                correct = false;
-                logger.out("Exception setting ticker "
+                LoggerUtils.out("Exception setting ticker "
                                 + ticker.getClass().getSimpleName());
                 e.printStackTrace();
             }
@@ -70,10 +66,6 @@ public class TickerThread implements Runnable {
 
     public boolean isRunned() {
         return runned;
-    }
-
-    public boolean isCorrect() {
-        return correct;
     }
 
     public AbstractTicker getTicker() {

@@ -6,17 +6,9 @@ package ru.goodloot.tr.exceptions;
  * 
  * @Description ...
  */
-public class AnxExchangeException extends RuntimeException {
+public class AnxExchangeException extends ExchangeException {
 
     public AnxExchangeException(Throwable cause) {
         super(cause);
-    }
-
-    public AnxExchangeException(String message) {
-        super(message);
-    }
-
-    public AnxExchangeException(String message, Throwable cause) {
-        super(message, cause);
     }
 }
