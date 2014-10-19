@@ -10,9 +10,9 @@ import ru.goodloot.tr.utils.LoggerUtils;
  */
 public class PAPriceValue {
 
-    private PriceValue master;
+    private PriceValue master = new PriceValue();
 
-    private PriceValue slave;
+    private PriceValue slave = new PriceValue();
 
     public boolean isSame(PAPriceValue i) {
         return i.getMaster().isSame(master) && i.getSlave().isSame(slave);
