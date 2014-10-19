@@ -70,11 +70,12 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
         this.confName = confName;
         this.master = master;
         this.slave = slave;
-        this.folder = getSlaveName() + getMasterName();
-        this.logger = new Logger(this.folder);
 
         this.masterTicker = master.getTicker();
         this.slaveTicker = slave.getTicker();
+
+        this.folder = getSlaveName() + getMasterName();
+        this.logger = new Logger(this.folder);
 
         init();
     }
