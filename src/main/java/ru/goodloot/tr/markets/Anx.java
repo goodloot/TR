@@ -205,7 +205,7 @@ public class Anx extends TradableExchange {
                 return new OrderInfo(lastOrderId, false, null);
             } else {
                 logger.out("Order " + lastOrderId + " closed");
-                return getClosedOrderInfo(lastOrderId);
+                return new OrderInfo(lastOrderId, true, null);
             }
 
         } catch (ExchangeException | IOException | NotAvailableFromExchangeException

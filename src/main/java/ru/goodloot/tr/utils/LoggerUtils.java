@@ -102,7 +102,7 @@ public class LoggerUtils {
         StringBuilder sb = new StringBuilder(date);
         for (Object o : objs) {
             if (o instanceof Double) {
-                sb.append((o + "       ").substring(0, 7));
+                sb.append(String.format("%7.5f", o));
             } else {
                 sb.append(o);
             }

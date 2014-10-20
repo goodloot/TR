@@ -31,12 +31,15 @@ public class PAAnx extends PAExchange {
         // Записываем, чтобы узнать разницу
         double prevBtc = exchange.getBtcAmount();
 
+        boolean cancelled = false;
+
         if (info.isOrderComplete()) {
 
             strTradeLog = "Complete  " + strTradeLog;
         } else {
             if (exchange.cancelLastOrder()) {
 
+                cancelled = true;
                 strTradeLog = "Cancelled " + strTradeLog;
             } else {
                 /**
@@ -60,16 +63,19 @@ public class PAAnx extends PAExchange {
             logger.out("Btc amount WAS changed, real ratio setted", tempRatio, ratio);
         } else {
             logger.out("Btc amount NOT changed");
-            for (int i = 0; i < 15; i++) {
 
-                exchange.setFundsAmount();
-                realBtcDiff = exchange.getBtcAmount() - prevBtc;
-                if (realBtcDiff != 0) {
-                    logger.out("Btc amount WAS changed in loop, real ratio setted",
-                                    tempRatio, ratio, i);
-                    break;
+            if (!cancelled) {
+                for (int i = 0; i < 15; i++) {
+
+                    exchange.setFundsAmount();
+                    realBtcDiff = exchange.getBtcAmount() - prevBtc;
+                    if (realBtcDiff != 0) {
+                        logger.out("Btc amount WAS changed in loop, real ratio setted",
+                                        tempRatio, ratio, i);
+                        break;
+                    }
+                    Utils.sleep(1000);
                 }
-                Utils.sleep(1000);
             }
         }
 
