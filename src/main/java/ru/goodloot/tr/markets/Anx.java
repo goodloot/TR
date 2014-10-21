@@ -304,7 +304,7 @@ public class Anx extends TradableExchange {
             double btcAmount = getBtcAmount();
 
             if (Math.abs(diffBtc) > btcAmount) {
-                diffBtc = btcAmount * feeMultiplier();
+                diffBtc = (btcAmount - 0.00001) * feeMultiplier();
             }
 
             BigDecimal volume = new BigDecimal(Math.abs(diffBtc), new MathContext(6));
