@@ -66,9 +66,14 @@ public abstract class PAExchange extends AbstractPABot {
         }
     }
 
+    protected void beforeLogOut() {}
+
     private void log(long i) {
 
         if (i % 600 == 1) {
+
+            beforeLogOut();
+
             logger.out(price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
         }

@@ -170,6 +170,11 @@ public class Anx extends TradableExchange {
 
     @Override
     public void setFundsAmount() {
+        setFundsAmount(false);
+    }
+
+    @Override
+    public void setFundsAmount(boolean suppressLog) {
 
         try {
 
@@ -178,8 +183,10 @@ public class Anx extends TradableExchange {
             setBtcAmount(ai.getBalance("BTC").doubleValue());
             setUsdAmount(ai.getBalance("USD").doubleValue() * getUsdCource());
 
-            logger.out("SetFundsAmount called", "btc: " + getBtcAmount(), "usd: "
-                            + getUsdAmount());
+            if (!suppressLog) {
+                logger.out("SetFundsAmount called", "btc: " + getBtcAmount(), "usd: "
+                                + getUsdAmount());
+            }
 
         } catch (ExchangeException | IOException | NotAvailableFromExchangeException
                         | NotYetImplementedForExchangeException e) {

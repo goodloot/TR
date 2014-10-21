@@ -99,6 +99,10 @@ public abstract class TradableExchange extends Exchange {
 
     abstract public void setFundsAmount();
 
+    public void setFundsAmount(boolean suppressLog) {
+        throw new NotImplementedException();
+    }
+
     abstract public OrderInfo getOrderInfo();
 
     abstract public boolean cancelLastOrder();
@@ -112,52 +116,42 @@ public abstract class TradableExchange extends Exchange {
     }
 
     public String getApiSecret() {
-
         return apiSecret;
     }
 
     public void setApiSecret(String apiSecret) {
-
         this.apiSecret = apiSecret;
     }
 
     public String getApiKey() {
-
         return apiKey;
     }
 
     public void setApiKey(String apiKey) {
-
         this.apiKey = apiKey;
     }
 
     public long getNonce() {
-
         return nonce++;
     }
 
     public double getBtcAmount() {
-
         return btcAmount;
     }
 
     public void setBtcAmount(double btcAmount) {
-
         this.btcAmount = btcAmount;
     }
 
     public double getUsdAmount() {
-
         return usdAmount;
     }
 
     public void setUsdAmount(double usdAmount) {
-
         this.usdAmount = usdAmount;
     }
 
     public String getDepthPrice() {
-
         return depthPrice;
     }
 }

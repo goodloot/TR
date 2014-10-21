@@ -25,6 +25,6 @@ public class UtilsTest {
     @Test
     public void testLogger() {
 
-        LoggerUtils.out(1.0 / 3000, 2, 0.3333333333, 313.123123123123);
+        LoggerUtils.out(1.0 / 3000, 2.0, 0.3333333333, 313.123123123123, 313.22);
     }
 }

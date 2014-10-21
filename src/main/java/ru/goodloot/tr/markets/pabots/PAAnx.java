@@ -74,11 +74,19 @@ public class PAAnx extends PAExchange {
                                         tempRatio, ratio, i);
                         break;
                     }
-                    Utils.sleep(1000);
+                    Utils.sleep(1500);
                 }
             }
         }
 
         logger.writeAndOut("tradesUser.txt", strTradeLog, realBtcDiff);
+    }
+
+    /*
+     * Будем переодически вызывать, опыт показывает, что надо
+     */
+    @Override
+    protected void beforeLogOut() {
+        exchange.setFundsAmount(true);
     }
 }
