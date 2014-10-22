@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -254,8 +255,8 @@ public class Anx extends TradableExchange {
                                             CurrencyPair.BTC_USD, null);
 
             BigDecimal price = t.getAsk();
-            depthPrice = price.toString();
             // BigDecimal price = new BigDecimal("2000");
+            depthPrice = price.toString();
 
             double usdAmount = getUsdAmount();
 
@@ -266,7 +267,8 @@ public class Anx extends TradableExchange {
                                                 * feeMultiplier();
             }
 
-            BigDecimal volume = new BigDecimal(diffBtc, new MathContext(6));
+            BigDecimal volume =
+                            new BigDecimal(diffBtc, new MathContext(6, RoundingMode.DOWN));
 
             LimitOrder lo =
                             new LimitOrder(OrderType.BID, volume, CurrencyPair.BTC_USD,
@@ -298,16 +300,18 @@ public class Anx extends TradableExchange {
                                             CurrencyPair.BTC_USD, null);
 
             BigDecimal price = t.getBid();
-            depthPrice = price.toString();
             // BigDecimal price = new BigDecimal("4000");
+            depthPrice = price.toString();
 
             double btcAmount = getBtcAmount();
 
-            if (Math.abs(diffBtc) > btcAmount) {
-                diffBtc = (btcAmount - 0.00001) * feeMultiplier();
+            if (Math.abs(diffBtc) > btcAmount * feeMultiplier()) {
+                diffBtc = btcAmount * feeMultiplier();
             }
 
-            BigDecimal volume = new BigDecimal(Math.abs(diffBtc), new MathContext(6));
+            BigDecimal volume =
+                            new BigDecimal(Math.abs(diffBtc), new MathContext(6,
+                                            RoundingMode.DOWN));
 
             LimitOrder lo =
                             new LimitOrder(OrderType.ASK, volume, CurrencyPair.BTC_USD,
