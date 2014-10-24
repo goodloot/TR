@@ -86,7 +86,10 @@ public class PAAnx extends PAExchange {
      * Будем переодически вызывать, опыт показывает, что надо
      */
     @Override
-    protected void beforeLogOut() {
-        exchange.setFundsAmount(true);
+    protected void peredoicalTask(long i) {
+
+        if (i % 1200 == 600) {
+            exchange.setFundsAmount(true);
+        }
     }
 }

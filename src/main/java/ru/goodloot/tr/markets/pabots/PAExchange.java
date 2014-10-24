@@ -57,6 +57,8 @@ public abstract class PAExchange extends AbstractPABot {
                     }
                 }
 
+                peredoicalTask(i);
+
             } catch (ExchangeException e) {
                 logger.out("Exchange exception occurs", e);
                 e.printStackTrace();
@@ -66,13 +68,11 @@ public abstract class PAExchange extends AbstractPABot {
         }
     }
 
-    protected void beforeLogOut() {}
+    protected void peredoicalTask(long i) {}
 
     private void log(long i) {
 
         if (i % 600 == 1) {
-
-            beforeLogOut();
 
             logger.out(price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
