@@ -7,7 +7,7 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ru.goodloot.tr.objects.OrderInfo;
-import ru.goodloot.tr.utils.Logger;
+import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -35,8 +35,6 @@ public abstract class TradableExchange extends Exchange {
 
     private boolean printMethodCallRequest = true;
 
-    private static final Logger logger = new Logger(TradableExchange.class);
-
     public TradableExchange(String secret, String key) {
 
         this.nonce = Utils.getNonce();
@@ -61,7 +59,7 @@ public abstract class TradableExchange extends Exchange {
                     String apiVersion) {
 
         if (printMethodCallRequest) {
-            logger.out("Call method: " + method, "Args: " + arguments);
+        	LoggerUtils.out("Call method: " + method, "Args: " + arguments);
         }
 
         String response;
@@ -73,7 +71,7 @@ public abstract class TradableExchange extends Exchange {
         }
 
         if (printMethodCallResponce) {
-            logger.out("Method: " + method, "Response: " + response);
+        	LoggerUtils.out("Method: " + method, "Response: " + response);
         }
 
         try {

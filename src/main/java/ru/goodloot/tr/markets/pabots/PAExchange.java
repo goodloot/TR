@@ -4,6 +4,7 @@ import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.enums.TradeTypes;
 import ru.goodloot.tr.exceptions.ExchangeException;
 import ru.goodloot.tr.objects.OrderInfo;
+import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
 /**
@@ -60,7 +61,7 @@ public abstract class PAExchange extends AbstractPABot {
                 peredoicalTask(i);
 
             } catch (ExchangeException e) {
-                logger.out("Exchange exception occurs", e);
+            	LoggerUtils.out("Exchange exception occurs", e);
                 e.printStackTrace();
             }
 
@@ -74,7 +75,7 @@ public abstract class PAExchange extends AbstractPABot {
 
         if (i % 600 == 1) {
 
-            logger.out(price, prevRatio, ratio, exchange.getBtcAmount(),
+        	LoggerUtils.out(price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
         }
 
@@ -173,7 +174,7 @@ public abstract class PAExchange extends AbstractPABot {
 
         if (Math.abs(ratio - lastSellRatio) > delta && diffBtc > MIN_DIFF_BTC) {
 
-            logger.out("Buy sign", price, prevRatio, ratio, exchange.getBtcAmount(),
+        	LoggerUtils.out("Buy sign", price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
 
             if (exchange.tradeBuyMargin(diffBtc)) {
@@ -182,7 +183,7 @@ public abstract class PAExchange extends AbstractPABot {
                 orderFlag = 1;
 
                 strTradeLog =
-                                logger.getFullStrWithoutDate("Buy",
+                                LoggerUtils.getFullStrWithoutDate("Buy",
                                                 exchange.getDepthPrice(), diffBtc,
                                                 masterSell, slaveBuy, ratio);
             }
@@ -196,7 +197,7 @@ public abstract class PAExchange extends AbstractPABot {
 
             if (Math.abs(lastBuyRatio - ratio) > delta && diffBtc < -MIN_DIFF_BTC) {
 
-                logger.out("Sell sign", price, prevRatio, ratio, exchange.getBtcAmount(),
+            	LoggerUtils.out("Sell sign", price, prevRatio, ratio, exchange.getBtcAmount(),
                                 exchange.getUsdAmount());
 
                 if (exchange.tradeSellMargin(diffBtc)) {
@@ -205,7 +206,7 @@ public abstract class PAExchange extends AbstractPABot {
                     orderFlag = 1;
 
                     strTradeLog =
-                                    logger.getFullStrWithoutDate("Sell",
+                    		LoggerUtils.getFullStrWithoutDate("Sell",
                                                     exchange.getDepthPrice(), diffBtc,
                                                     masterBuy, slaveSell, ratio);
                 }

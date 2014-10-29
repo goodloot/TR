@@ -3,6 +3,7 @@ package ru.goodloot.tr.markets.pabots;
 import ru.goodloot.tr.TickerThread;
 import ru.goodloot.tr.markets.Anx;
 import ru.goodloot.tr.objects.OrderInfo;
+import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
 /**
@@ -60,9 +61,9 @@ public class PAAnx extends PAExchange {
         if (realBtcDiff != 0) {
 
             setRatioFromReal();
-            logger.out("Btc amount WAS changed, real ratio setted", tempRatio, ratio);
+            LoggerUtils.out("Btc amount WAS changed, real ratio setted", tempRatio, ratio);
         } else {
-            logger.out("Btc amount NOT changed");
+        	LoggerUtils.out("Btc amount NOT changed");
 
             if (!cancelled) {
                 for (int i = 0; i < 15; i++) {
@@ -70,7 +71,7 @@ public class PAAnx extends PAExchange {
                     exchange.setFundsAmount();
                     realBtcDiff = exchange.getBtcAmount() - prevBtc;
                     if (realBtcDiff != 0) {
-                        logger.out("Btc amount WAS changed in loop, real ratio setted",
+                    	LoggerUtils.out("Btc amount WAS changed in loop, real ratio setted",
                                         tempRatio, ratio, i);
                         break;
                     }

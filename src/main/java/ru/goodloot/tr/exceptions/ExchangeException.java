@@ -8,7 +8,12 @@ package ru.goodloot.tr.exceptions;
  */
 public class ExchangeException extends RuntimeException {
 
-    public ExchangeException(Throwable cause) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4582308554084376548L;
+
+	public ExchangeException(Throwable cause) {
         super(cause);
     }
 }

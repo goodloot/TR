@@ -4,6 +4,7 @@ package ru.goodloot.tr;
  * To change this template, choose Tools | Templates and open the template in the editor.
  */
 import ru.goodloot.tr.markets.tickers.BitstampTicker;
+import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 import ru.goodloot.tr.utils.Logger;
 import java.util.Date;
@@ -54,7 +55,7 @@ public class TradeBotTest {
 
         Logger logger = new Logger("test");
         double num = 0.01;
-        logger.out("123", 1.0 / 3, num, "asd", 100);
+        LoggerUtils.out("123", 1.0 / 3, num, "asd", 100);
         logger.write("logNew.txt", Utils.getNonce() / 1000, 100, 213, 132, 123);
     }
 

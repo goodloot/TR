@@ -20,8 +20,10 @@ public class LoggerUtils {
                 }
                 file.createNewFile();
             }
-            FileOutputStream f = new FileOutputStream(file, true);
-            f.write((newLine + str).getBytes());
+            
+            try (FileOutputStream f = new FileOutputStream(file, true);) {
+            	f.write((newLine + str).getBytes());
+            }
         } catch (IOException e) {
             System.out.println("An I/O Exception Occured" + e.toString());
         }

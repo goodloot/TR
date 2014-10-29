@@ -34,7 +34,7 @@ import javax.net.ssl.HttpsURLConnection;
 import org.json.simple.JSONObject;
 import ru.goodloot.tr.exceptions.AnxExchangeException;
 import ru.goodloot.tr.objects.OrderInfo;
-import ru.goodloot.tr.utils.Logger;
+import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
 /**
@@ -42,8 +42,6 @@ import ru.goodloot.tr.utils.Utils;
  * @author lol
  */
 public class Anx extends TradableExchange {
-
-    private static final Logger logger = new Logger(Anx.class);
 
     public final static double HKD_USD = 0.129;
 
@@ -185,7 +183,7 @@ public class Anx extends TradableExchange {
             setUsdAmount(ai.getBalance("USD").doubleValue() * getUsdCource());
 
             if (!suppressLog) {
-                logger.out("SetFundsAmount called", "btc: " + getBtcAmount(), "usd: "
+                LoggerUtils.out("SetFundsAmount called", "btc: " + getBtcAmount(), "usd: "
                                 + getUsdAmount());
             }
 
@@ -209,10 +207,10 @@ public class Anx extends TradableExchange {
             }
 
             if (order != null) {
-                logger.out("Order " + lastOrderId + " opened");
+            	LoggerUtils.out("Order " + lastOrderId + " opened");
                 return new OrderInfo(lastOrderId, false, null);
             } else {
-                logger.out("Order " + lastOrderId + " closed");
+            	LoggerUtils.out("Order " + lastOrderId + " closed");
                 return new OrderInfo(lastOrderId, true, null);
             }
 
@@ -237,7 +235,7 @@ public class Anx extends TradableExchange {
     public boolean cancelLastOrder() {
 
         try {
-            logger.out("Call cancelLastOrder " + lastOrderId);
+        	LoggerUtils.out("Call cancelLastOrder " + lastOrderId);
             return tradeService.cancelOrder(lastOrderId);
         } catch (ExchangeException | IOException | NotAvailableFromExchangeException
                         | NotYetImplementedForExchangeException e) {
@@ -274,11 +272,11 @@ public class Anx extends TradableExchange {
                             new LimitOrder(OrderType.BID, volume, CurrencyPair.BTC_USD,
                                             null, Utils.now(), price);
 
-            logger.out("Placing limit buy order", "vol: " + volume, "price: " + price);
+            LoggerUtils.out("Placing limit buy order", "vol: " + volume, "price: " + price);
 
             String res = tradeService.placeLimitOrder(lo);
 
-            logger.out("Limit buy order responce: " + res);
+            LoggerUtils.out("Limit buy order responce: " + res);
 
             lastOrderId = parseOrderId(res);
 
@@ -317,11 +315,11 @@ public class Anx extends TradableExchange {
                             new LimitOrder(OrderType.ASK, volume, CurrencyPair.BTC_USD,
                                             null, Utils.now(), price);
 
-            logger.out("Placing limit sell order", "vol: " + volume, "price: " + price);
+            LoggerUtils.out("Placing limit sell order", "vol: " + volume, "price: " + price);
 
             String res = tradeService.placeLimitOrder(lo);
 
-            logger.out("Limit sell order responce: " + res);
+            LoggerUtils.out("Limit sell order responce: " + res);
 
             lastOrderId = parseOrderId(res);
 

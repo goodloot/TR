@@ -84,7 +84,7 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
         setKeySecret();
 
-        logger.out("Reading " + confName + " for configurating");
+        LoggerUtils.out("Reading " + confName + " for configurating");
 
         String str = LoggerUtils.readLast(confName);
         String args[] = str.split(" ");
@@ -129,13 +129,13 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
 
     public void initLastsRatio(String folder) {
 
-        logger.out("Start init lasts ratio from " + folder);
+        LoggerUtils.out("Start init lasts ratio from " + folder);
 
         try {
             String str = LoggerUtils.readLast(folder + "/buy.txt");
             lastBuyRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
         } catch (RuntimeException e) {
-            logger.out("Exception reading buy.txt, set lastBuyRatio = 10", e);
+            LoggerUtils.out("Exception reading buy.txt, set lastBuyRatio = 10", e);
             lastBuyRatio = 10;
         }
 
@@ -143,7 +143,7 @@ public abstract class AbstractPABot<T extends TradableExchange> implements Runna
             String str = LoggerUtils.readLast(folder + "/sell.txt");
             lastSellRatio = Double.parseDouble(str.substring(str.lastIndexOf('\t')));
         } catch (RuntimeException e) {
-            logger.out("Exception reading sell.txt, set lastSellRatio = 10", e);
+            LoggerUtils.out("Exception reading sell.txt, set lastSellRatio = 10", e);
             lastSellRatio = 10;
         }
     }
