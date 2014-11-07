@@ -59,10 +59,9 @@ public class PAAnx extends PAExchange {
         double tempRatio = ratio;
 
         if (realBtcDiff != 0) {
-
-            setRatioFromReal();
             LoggerUtils.out("Btc amount WAS changed, real ratio setted", tempRatio, ratio);
         } else {
+        	
         	LoggerUtils.out("Btc amount NOT changed");
 
             if (!cancelled) {

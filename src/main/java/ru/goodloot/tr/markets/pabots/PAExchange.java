@@ -124,16 +124,7 @@ public abstract class PAExchange extends AbstractPABot {
 
         exchange.setFundsAmount();
 
-        setRatioFromReal();
-
         logger.writeAndOut("tradesUser.txt", strTradeLog);
-    }
-
-    protected final void setRatioFromReal() {
-        ratio =
-                        getRealRatio(exchange.getBtcAmount()
-                                        / exchange.getTotalInBtc(price.getSlave()
-                                                        .getBuy()));
     }
 
     protected OrderInfo updateOrderInfo(OrderInfo info) {
@@ -142,6 +133,11 @@ public abstract class PAExchange extends AbstractPABot {
 
     private void setLastTrade() {
 
+        ratio =
+                getRealRatio(exchange.getBtcAmount()
+                                / exchange.getTotalInBtc(price.getSlave()
+                                                .getBuy()));
+    	
         if (lastTrade == TradeTypes.Buy) {
 
             lastBuyRatio = ratio;

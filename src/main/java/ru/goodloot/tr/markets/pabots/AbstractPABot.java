@@ -17,7 +17,7 @@ import ru.goodloot.tr.utils.LoggerUtils;
  * 
  * @author lol
  */
-public abstract class AbstractPABot<T extends TradableExchange> implements Runnable {
+public abstract class AbstractPABot implements Runnable {
 
     protected final Logger logger;
 
