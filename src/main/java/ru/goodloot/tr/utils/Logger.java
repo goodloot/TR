@@ -20,15 +20,15 @@ public class Logger {
     }
 
     public void write(String fileName, Object... objs) {
-        write(appendFolder(fileName), LoggerUtils.getFullStr(objs));
+        LoggerUtils.write(appendFolder(fileName), LoggerUtils.getFullStr(objs));
     }
 
     public void writeWithoutDate(String fileName, Object... objs) {
-        write(appendFolder(fileName), LoggerUtils.getFullStrWithoutDate(objs));
+        LoggerUtils.write(appendFolder(fileName), LoggerUtils.getFullStrWithoutDate(objs));
     }
 
     public void writeAndOut(String fileName, Object... objs) {
-        writeAndOut(appendFolder(fileName), LoggerUtils.getFullStr(objs));
+        LoggerUtils.writeAndOut(appendFolder(fileName), LoggerUtils.getFullStr(objs));
     }
 
     private String appendFolder(String fileName) {
