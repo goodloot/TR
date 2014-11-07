@@ -61,7 +61,7 @@ public abstract class PAExchange extends AbstractPABot {
                 peredoicalTask(i);
 
             } catch (ExchangeException e) {
-            	LoggerUtils.out("Exchange exception occurs", e);
+                LoggerUtils.out("Exchange exception occurs", e);
                 e.printStackTrace();
             }
 
@@ -75,7 +75,7 @@ public abstract class PAExchange extends AbstractPABot {
 
         if (i % 600 == 1) {
 
-        	LoggerUtils.out(price, prevRatio, ratio, exchange.getBtcAmount(),
+            LoggerUtils.out(price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
         }
 
@@ -133,20 +133,19 @@ public abstract class PAExchange extends AbstractPABot {
 
     private void setLastTrade() {
 
-        ratio =
-                getRealRatio(exchange.getBtcAmount()
-                                / exchange.getTotalInBtc(price.getSlave()
-                                                .getBuy()));
-    	
+        double realRatio = getRealRatio();
+
         if (lastTrade == TradeTypes.Buy) {
 
-            lastBuyRatio = ratio;
-            logger.write("buy.txt", ratio);
+            lastBuyRatio = realRatio;
+            logger.write("buy.txt", lastBuyRatio);
+            LoggerUtils.out("Last buy ratio setted:", lastBuyRatio, ratio);
 
         } else if (lastTrade == TradeTypes.Sell) {
 
-            lastSellRatio = ratio;
-            logger.write("sell.txt", ratio);
+            lastSellRatio = realRatio;
+            logger.write("sell.txt", lastSellRatio);
+            LoggerUtils.out("Last sell ratio setted:", lastSellRatio, ratio);
         }
     }
 
@@ -170,7 +169,7 @@ public abstract class PAExchange extends AbstractPABot {
 
         if (Math.abs(ratio - lastSellRatio) > delta && diffBtc > MIN_DIFF_BTC) {
 
-        	LoggerUtils.out("Buy sign", price, prevRatio, ratio, exchange.getBtcAmount(),
+            LoggerUtils.out("Buy sign", price, prevRatio, ratio, exchange.getBtcAmount(),
                             exchange.getUsdAmount());
 
             if (exchange.tradeBuyMargin(diffBtc)) {
@@ -193,8 +192,8 @@ public abstract class PAExchange extends AbstractPABot {
 
             if (Math.abs(lastBuyRatio - ratio) > delta && diffBtc < -MIN_DIFF_BTC) {
 
-            	LoggerUtils.out("Sell sign", price, prevRatio, ratio, exchange.getBtcAmount(),
-                                exchange.getUsdAmount());
+                LoggerUtils.out("Sell sign", price, prevRatio, ratio,
+                                exchange.getBtcAmount(), exchange.getUsdAmount());
 
                 if (exchange.tradeSellMargin(diffBtc)) {
 
@@ -202,7 +201,7 @@ public abstract class PAExchange extends AbstractPABot {
                     orderFlag = 1;
 
                     strTradeLog =
-                    		LoggerUtils.getFullStrWithoutDate("Sell",
+                                    LoggerUtils.getFullStrWithoutDate("Sell",
                                                     exchange.getDepthPrice(), diffBtc,
                                                     masterBuy, slaveSell, ratio);
                 }
@@ -225,7 +224,13 @@ public abstract class PAExchange extends AbstractPABot {
         }
     }
 
-    protected double getRealRatio(double realBtc) {
-        return (kMax - kMin) * expectedBtc + kMin;
+    protected double getRealRatio() {
+
+        double realBtc =
+                        exchange.getBtcAmount()
+                                        / exchange.getTotalInBtc(price.getSlave()
+                                                        .getBuy());
+
+        return (kMax - kMin) * realBtc + kMin;
     }
 }
