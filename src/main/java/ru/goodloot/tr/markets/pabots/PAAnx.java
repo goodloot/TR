@@ -32,10 +32,12 @@ public class PAAnx extends PAExchange {
         // Записываем, чтобы узнать разницу
         double prevBtc = exchange.getBtcAmount();
 
+        boolean complete = false;
         boolean cancelled = false;
 
         if (info.isOrderComplete()) {
 
+        	complete = true;
             strTradeLog = "Complete  " + strTradeLog;
         } else {
             if (exchange.cancelLastOrder()) {
@@ -56,10 +58,9 @@ public class PAAnx extends PAExchange {
          * Устанавливаем баланс и, если он поменялся, пересчитываем ратио
          */
         double realBtcDiff = exchange.getBtcAmount() - prevBtc;
-        double tempRatio = ratio;
 
         if (realBtcDiff != 0) {
-            LoggerUtils.out("Btc amount WAS changed, real ratio setted", tempRatio, ratio);
+            LoggerUtils.out("Btc amount WAS changed, real ratio", ratio);
         } else {
         	
         	LoggerUtils.out("Btc amount NOT changed");
@@ -70,13 +71,19 @@ public class PAAnx extends PAExchange {
                     exchange.setFundsAmount();
                     realBtcDiff = exchange.getBtcAmount() - prevBtc;
                     if (realBtcDiff != 0) {
-                    	LoggerUtils.out("Btc amount WAS changed in loop, real ratio setted",
-                                        tempRatio, ratio, i);
+                    	LoggerUtils.out("Btc amount WAS changed in loop, ratio", ratio, i);
                         break;
                     }
                     Utils.sleep(1500);
                 }
             }
+        }
+        
+        // Если ордер не завершился, ратио высчитываем сами
+        if (!complete) {
+        	double temp = ratio;
+        	ratio = getRealRatio();
+        	LoggerUtils.out("Order not complete, set real ratio", ratio, "Prev:", temp);
         }
 
         logger.writeAndOut("tradesUser.txt", strTradeLog, realBtcDiff);

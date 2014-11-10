@@ -133,19 +133,19 @@ public abstract class PAExchange extends AbstractPABot {
 
     private void setLastTrade() {
 
-        double realRatio = getRealRatio();
+//        double realRatio = getRealRatio();
 
         if (lastTrade == TradeTypes.Buy) {
 
-            lastBuyRatio = realRatio;
+            lastBuyRatio = ratio;
             logger.write("buy.txt", lastBuyRatio);
-            LoggerUtils.out("Last buy ratio setted:", lastBuyRatio, ratio);
+            LoggerUtils.out("Last buy ratio setted:", lastBuyRatio);
 
         } else if (lastTrade == TradeTypes.Sell) {
 
-            lastSellRatio = realRatio;
+            lastSellRatio = ratio;
             logger.write("sell.txt", lastSellRatio);
-            LoggerUtils.out("Last sell ratio setted:", lastSellRatio, ratio);
+            LoggerUtils.out("Last sell ratio setted:", lastSellRatio);
         }
     }
 
