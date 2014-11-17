@@ -73,12 +73,15 @@ public abstract class AbstractTicker extends AbstractUtils {
             return true;
         }
 
-        boolean notTrustedChanges =
-                        Math.abs((candidateBuy + candidateSell - tickerBuy - tickerSell)
-                                        / (tickerBuy + tickerSell)) > getTrustedPriceChange()
-                                        || candidateBuy < candidateSell;
+        boolean isTrusted = isTrustedPriceChange();
 
-        return !notTrustedChanges;
+        return isTrusted;
+    }
+
+    protected boolean isTrustedPriceChange() {
+        return !(Math.abs((candidateBuy + candidateSell - tickerBuy - tickerSell)
+                / (tickerBuy + tickerSell)) > getTrustedPriceChange()
+                || candidateBuy < candidateSell);
     }
 
     protected double getTrustedPriceChange() {

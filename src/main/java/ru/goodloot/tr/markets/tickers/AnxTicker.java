@@ -4,6 +4,7 @@
 package ru.goodloot.tr.markets.tickers;
 
 import org.json.simple.JSONObject;
+
 import ru.goodloot.tr.markets.Anx;
 
 /**
@@ -22,7 +23,7 @@ public class AnxTicker extends AbstractTicker {
     }
 
     @Override
-    protected double getTrustedPriceChange() {
-        return 0.04;
+    protected boolean isTrustedPriceChange() {
+        return true;
     }
 }
