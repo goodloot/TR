@@ -3,7 +3,6 @@
  */
 package ru.goodloot.tr.markets.exchange;
 
-import java.util.Map;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ru.goodloot.tr.markets.data.OrderInfo;
@@ -11,15 +10,17 @@ import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Map;
+
 /**
  * 
  * @author lol
  */
 public abstract class TradableExchange extends Exchange {
 
-    private String apiSecret;
+    private final String apiSecret;
 
-    private String apiKey;
+    private final String apiKey;
 
     private long nonce;
 
@@ -117,17 +118,7 @@ public abstract class TradableExchange extends Exchange {
         return apiSecret;
     }
 
-    public void setApiSecret(String apiSecret) {
-        this.apiSecret = apiSecret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
+    public String getApiKey() { return apiKey; }
 
     public long getNonce() {
         return nonce++;
