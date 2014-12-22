@@ -3,6 +3,7 @@
  */
 package ru.goodloot.tr.markets.tickers;
 
+import ru.goodloot.tr.markets.MarketInfoReceiver;
 import ru.goodloot.tr.utils.AbstractUtils;
 import ru.goodloot.tr.utils.Logger;
 
@@ -10,7 +11,8 @@ import ru.goodloot.tr.utils.Logger;
  * 
  * @author lol
  */
-public abstract class AbstractTicker extends AbstractUtils {
+public abstract class AbstractTicker extends AbstractUtils implements
+        MarketInfoReceiver {
 
     private final static Logger logger = new Logger(AbstractTicker.class);
 
@@ -28,7 +30,7 @@ public abstract class AbstractTicker extends AbstractUtils {
 
     protected double candidateSell = 0;
 
-    public void setTicker() {
+    public void getInfo() {
 
         setCandidates();
 

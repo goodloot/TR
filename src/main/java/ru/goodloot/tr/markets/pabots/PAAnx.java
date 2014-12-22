@@ -1,8 +1,8 @@
 package ru.goodloot.tr.markets.pabots;
 
-import ru.goodloot.tr.TickerThread;
-import ru.goodloot.tr.markets.Anx;
-import ru.goodloot.tr.objects.OrderInfo;
+import ru.goodloot.tr.markets.TickerInfo;
+import ru.goodloot.tr.markets.exchange.Anx;
+import ru.goodloot.tr.markets.data.OrderInfo;
 import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
@@ -14,7 +14,7 @@ import ru.goodloot.tr.utils.Utils;
  */
 public class PAAnx extends PAExchange {
 
-    public PAAnx(String confName, TickerThread master, TickerThread slave) {
+    public PAAnx(String confName, TickerInfo master, TickerInfo slave) {
 
         super(confName, master, slave);
 

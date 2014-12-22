@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import ru.goodloot.tr.markets.Kraken;
+import ru.goodloot.tr.markets.exchange.Kraken;
 
 /**
  * 

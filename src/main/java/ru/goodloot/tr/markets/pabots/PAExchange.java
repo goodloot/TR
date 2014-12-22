@@ -1,9 +1,9 @@
 package ru.goodloot.tr.markets.pabots;
 
-import ru.goodloot.tr.TickerThread;
+import ru.goodloot.tr.markets.TickerInfo;
 import ru.goodloot.tr.enums.TradeTypes;
 import ru.goodloot.tr.exceptions.ExchangeException;
-import ru.goodloot.tr.objects.OrderInfo;
+import ru.goodloot.tr.markets.data.OrderInfo;
 import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
@@ -25,7 +25,7 @@ public abstract class PAExchange extends AbstractPABot {
 
     private static final int WAIT_TIMER_MS = 200;
 
-    protected PAExchange(String confName, TickerThread master, TickerThread slave) {
+    protected PAExchange(String confName, TickerInfo master, TickerInfo slave) {
         super(confName, master, slave);
     }
 

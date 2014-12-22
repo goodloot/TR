@@ -1,6 +1,7 @@
 package ru.goodloot.tr;
 
 import org.junit.Test;
+import ru.goodloot.tr.markets.TickerInfo;
 import ru.goodloot.tr.markets.pabots.PAAnx;
 import ru.goodloot.tr.markets.tickers.BitfinexTicker;
 import ru.goodloot.tr.utils.LoggerUtils;
@@ -17,7 +18,7 @@ public class UtilsTest {
     public void testReadLast() {
         // System.out.println(new File(".").getAbsolutePath());
 
-        PAAnx anx = new PAAnx(null, new TickerThread(new BitfinexTicker()), null);
+        PAAnx anx = new PAAnx(null, new TickerInfo(new BitfinexTicker()), null);
         // anx.initLastsRatio("target/test-classes");
         // System.out.println(LoggerUtils.readLast("target/test-classes/buy.txt"));
     }

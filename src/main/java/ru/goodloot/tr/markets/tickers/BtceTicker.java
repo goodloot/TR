@@ -5,7 +5,7 @@ package ru.goodloot.tr.markets.tickers;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ru.goodloot.tr.markets.Btce;
+import ru.goodloot.tr.markets.exchange.Btce;
 
 /**
  * 

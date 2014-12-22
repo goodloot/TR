@@ -4,7 +4,7 @@
 package ru.goodloot.tr.markets.tickers;
 
 import org.json.simple.JSONObject;
-import ru.goodloot.tr.markets.Bitstamp;
+import ru.goodloot.tr.markets.exchange.Bitstamp;
 
 /**
  * 

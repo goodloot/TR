@@ -5,7 +5,7 @@ package ru.goodloot.tr.markets.tickers;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ru.goodloot.tr.markets.Kraken;
+import ru.goodloot.tr.markets.exchange.Kraken;
 
 /**
  * 

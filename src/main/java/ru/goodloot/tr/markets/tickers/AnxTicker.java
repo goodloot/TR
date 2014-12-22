@@ -5,7 +5,7 @@ package ru.goodloot.tr.markets.tickers;
 
 import org.json.simple.JSONObject;
 
-import ru.goodloot.tr.markets.Anx;
+import ru.goodloot.tr.markets.exchange.Anx;
 
 /**
  * 

@@ -3,15 +3,16 @@
  */
 package ru.goodloot.tr.markets.pabots;
 
+import ru.goodloot.tr.markets.TickerInfo;
+import ru.goodloot.tr.markets.exchange.TradableExchange;
+import ru.goodloot.tr.markets.data.PAPriceValue;
+import ru.goodloot.tr.markets.tickers.AbstractTicker;
+import ru.goodloot.tr.utils.Logger;
+import ru.goodloot.tr.utils.LoggerUtils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import ru.goodloot.tr.TickerThread;
-import ru.goodloot.tr.markets.TradableExchange;
-import ru.goodloot.tr.markets.tickers.AbstractTicker;
-import ru.goodloot.tr.objects.PAPriceValue;
-import ru.goodloot.tr.utils.Logger;
-import ru.goodloot.tr.utils.LoggerUtils;
 
 /**
  * 
@@ -51,9 +52,9 @@ public abstract class AbstractPABot implements Runnable {
 
     protected TradableExchange exchange;
 
-    protected final TickerThread master;
+    protected final TickerInfo master;
 
-    protected final TickerThread slave;
+    protected final TickerInfo slave;
 
     protected final AbstractTicker masterTicker;
 
@@ -65,7 +66,7 @@ public abstract class AbstractPABot implements Runnable {
 
     abstract public void doit();
 
-    protected AbstractPABot(String confName, TickerThread master, TickerThread slave) {
+    protected AbstractPABot(String confName, TickerInfo master, TickerInfo slave) {
 
         this.confName = confName;
         this.master = master;

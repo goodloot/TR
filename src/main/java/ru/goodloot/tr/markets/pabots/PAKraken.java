@@ -8,7 +8,7 @@ package ru.goodloot.tr.markets.pabots;
  * @author lol
  */
 public class PAKraken {
-    // public PAKraken(String confName, TickerThread master, TickerThread slave) {
+    // public PAKraken(String confName, TickerInfo master, TickerInfo slave) {
     //
     // this.confName = confName;
     // this.master = master;

@@ -3,6 +3,7 @@
  */
 package ru.goodloot.tr;
 
+import ru.goodloot.tr.markets.TickerInfo;
 import ru.goodloot.tr.markets.pabots.PAAnx;
 import ru.goodloot.tr.markets.tickers.AnxTicker;
 import ru.goodloot.tr.markets.tickers.BitfinexTicker;
@@ -19,9 +20,9 @@ import ru.goodloot.tr.markets.tickers.BitfinexTicker;
  */
 public class Runner {
 
-    private final TickerThread bitfinexTicker = new TickerThread(new BitfinexTicker());
+    private final TickerInfo bitfinexTicker = new TickerInfo(new BitfinexTicker());
 
-    private final TickerThread anxTicker = new TickerThread(new AnxTicker());
+    private final TickerInfo anxTicker = new TickerInfo(new AnxTicker());
 
     public void runAnxBitfinex() {
 
