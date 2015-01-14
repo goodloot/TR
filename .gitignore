@@ -1,2 +1,11 @@
 /target
 /src/test/java/ru/goodloot/tr/AnxTest.java
+
+#Eclipse
+.settings
+.classpath
+.project
+
+#Idea
+.idea
+TR.iml
