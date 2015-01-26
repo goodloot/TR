@@ -56,6 +56,8 @@ public abstract class PAExchange extends AbstractPABot {
 
                 periodicalTask(i);
 
+                log(i);
+
             } catch (RuntimeException e) {
                 LoggerUtils.out("Exchange exception occurs", e);
                 e.printStackTrace();
@@ -63,9 +65,7 @@ public abstract class PAExchange extends AbstractPABot {
         }
     }
 
-    protected void periodicalTask(long i) {
-        log(i);
-    }
+    protected void periodicalTask(long i) {}
 
     private void log(long i) {
 
