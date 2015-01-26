@@ -1,9 +1,9 @@
 package ru.goodloot.tr.markets.pabots;
 
-import ru.goodloot.tr.markets.TickerInfo;
 import ru.goodloot.tr.enums.TradeTypes;
-import ru.goodloot.tr.exceptions.ExchangeException;
+import ru.goodloot.tr.markets.TickerInfo;
 import ru.goodloot.tr.markets.data.OrderInfo;
+import ru.goodloot.tr.markets.data.PAPriceValue;
 import ru.goodloot.tr.utils.LoggerUtils;
 import ru.goodloot.tr.utils.Utils;
 
@@ -51,25 +51,21 @@ public abstract class PAExchange extends AbstractPABot {
                 }
 
                 if (slaveTicker.isCorrect() && masterTicker.isCorrect()) {
-
-                    if (slaveTicker.isChanged() || masterTicker.isChanged()) {
-
-                        processTrading();
-                    }
+                    processTrading();
                 }
 
-                peredoicalTask(i);
+                periodicalTask(i);
 
-            } catch (ExchangeException e) {
+            } catch (RuntimeException e) {
                 LoggerUtils.out("Exchange exception occurs", e);
                 e.printStackTrace();
             }
-
-            log(i);
         }
     }
 
-    protected void peredoicalTask(long i) {}
+    protected void periodicalTask(long i) {
+        log(i);
+    }
 
     private void log(long i) {
 
@@ -79,7 +75,7 @@ public abstract class PAExchange extends AbstractPABot {
                             exchange.getUsdAmount());
         }
 
-        if (i % 5 == 1 && isWriteInLog()) {
+        if (i % 5 == 1 && !(price.equals(prevPrice))) {
 
             logger.writeWithoutDate("logNew.txt", Utils.getNonce(), price);
             // Записываем предыдущую цену чтобы знать, поменялась ли она
@@ -127,13 +123,7 @@ public abstract class PAExchange extends AbstractPABot {
         logger.writeAndOut("tradesUser.txt", strTradeLog);
     }
 
-    protected OrderInfo updateOrderInfo(OrderInfo info) {
-        return info;
-    }
-
     private void setLastTrade() {
-
-//        double realRatio = getRealRatio();
 
         if (lastTrade == TradeTypes.Buy) {
 
@@ -156,10 +146,17 @@ public abstract class PAExchange extends AbstractPABot {
         double slaveBuy = slaveTicker.getTickerBuy() * getUsdCource();
         double slaveSell = slaveTicker.getTickerSell() * getUsdCource();
 
+        PAPriceValue prev = new PAPriceValue(price);
+
         price.getMaster().setBuy(masterBuy);
         price.getMaster().setSell(masterSell);
         price.getSlave().setBuy(slaveBuy);
         price.getSlave().setSell(slaveSell);
+
+        if (price.equals(prev)) {
+            // Если цена не поменялась - не торгуем
+            return;
+        }
 
         double totalInBtc = exchange.getTotalInBtc(slaveBuy);
 

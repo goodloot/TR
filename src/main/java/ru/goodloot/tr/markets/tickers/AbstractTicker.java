@@ -22,62 +22,44 @@ public abstract class AbstractTicker extends AbstractUtils implements
 
     private double tickerSell = 0;
 
-    private volatile boolean changed;
-
     private volatile boolean correct;
 
     protected double candidateBuy = 0;
 
     protected double candidateSell = 0;
 
+    @Override
     public void getInfo() {
 
         setCandidates();
 
-        correct = checkCorrect();
+        synchronized (this) {
 
-        if (correct) {
+            correct = checkCorrect();
 
-            if (checkPriceChanged()) {
+            if (correct) {
 
-                synchronized (this) {
-
-                    tickerBuy = candidateBuy;
-                    tickerSell = candidateSell;
-                }
-                // Удостоверяемся, что цена поменялась
-                changed = true;
+                tickerBuy = candidateBuy;
+                tickerSell = candidateSell;
             } else {
-                changed = false;
+                logger.writeAndOut("errs.txt", getClass().getSimpleName()
+                                + " notTrustedPriceChange", candidateBuy,
+                        candidateSell);
             }
-        } else {
-            logger.writeAndOut("errs.txt", getClass().getSimpleName()
-                            + " notTrustedPriceChange", candidateBuy, candidateSell);
         }
-
     }
 
     abstract protected void setCandidates();
 
-    /**
-     * @return true - цена поменялась
-     */
-    private boolean checkPriceChanged() {
-        return candidateBuy != tickerBuy || candidateSell != tickerSell;
-    }
-
     private boolean checkCorrect() {
-
         // Возможно для первой итерации надо тоже сделать какую-то проверку
         boolean firstIteration = tickerBuy == 0 && tickerSell == 0;
 
         if (firstIteration) {
             return true;
+        } else {
+            return isTrustedPriceChange();
         }
-
-        boolean isTrusted = isTrustedPriceChange();
-
-        return isTrusted;
     }
 
     protected boolean isTrustedPriceChange() {
@@ -100,9 +82,5 @@ public abstract class AbstractTicker extends AbstractUtils implements
 
     public boolean isCorrect() {
         return correct;
-    }
-
-    public boolean isChanged() {
-        return changed;
     }
 }

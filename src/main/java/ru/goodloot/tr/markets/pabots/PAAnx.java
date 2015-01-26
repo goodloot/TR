@@ -21,7 +21,6 @@ public class PAAnx extends PAExchange {
         exchange = new Anx(getSecret(), getKey());
     }
 
-    @Override
     protected OrderInfo updateOrderInfo(OrderInfo info) {
         return exchange.getOrderInfo();
     }
@@ -93,7 +92,7 @@ public class PAAnx extends PAExchange {
      * Будем переодически вызывать, опыт показывает, что надо
      */
     @Override
-    protected void peredoicalTask(long i) {
+    protected void periodicalTask(long i) {
 
         if (i % 1200 == 600) {
             exchange.setFundsAmount(true);

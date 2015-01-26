@@ -85,7 +85,7 @@ public abstract class AbstractPABot implements Runnable {
 
         setKeySecret();
 
-        LoggerUtils.out("Reading " + confName + " for configurating");
+        LoggerUtils.out("Reading " + confName + " for configurations");
 
         String str = LoggerUtils.readLast(confName);
         String args[] = str.split(" ");
@@ -149,10 +149,6 @@ public abstract class AbstractPABot implements Runnable {
         }
     }
 
-    protected final boolean isWriteInLog() {
-        return !(price.isSame(prevPrice));
-    }
-
     @Override
     public void run() {
         doit();
@@ -177,14 +173,6 @@ public abstract class AbstractPABot implements Runnable {
     private <S extends AbstractTicker> String getTickerExchangeName(Class<S> clazz) {
         String s = clazz.getSimpleName();
         return s.substring(0, s.indexOf("Ticker"));
-    }
-
-    public String getFolder() {
-        return folder;
-    }
-
-    public String getConfName() {
-        return confName;
     }
 
     public String getKey() {

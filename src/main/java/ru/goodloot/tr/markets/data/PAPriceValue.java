@@ -10,18 +10,30 @@ import ru.goodloot.tr.utils.LoggerUtils;
  */
 public class PAPriceValue {
 
+    public PAPriceValue() {}
+
+    public PAPriceValue(PAPriceValue price) {
+
+        master.setBuy(price.getMaster().getBuy());
+        master.setSell(price.getMaster().getSell());
+        slave.setBuy(price.getSlave().getBuy());
+        slave.setSell(price.getSlave().getSell());
+    }
+
+    public void setPrice(PAPriceValue price) {
+
+        master.setBuy(price.getMaster().getBuy());
+        master.setSell(price.getMaster().getSell());
+        slave.setBuy(price.getSlave().getBuy());
+        slave.setSell(price.getSlave().getSell());
+    }
+
     private PriceValue master = new PriceValue();
 
     private PriceValue slave = new PriceValue();
 
-    public boolean isSame(PAPriceValue i) {
-        return i.getMaster().isSame(master) && i.getSlave().isSame(slave);
-    }
-
-    public void setPrice(PAPriceValue i) {
-
-        master = i.getMaster();
-        slave = i.getSlave();
+    public boolean equals(PAPriceValue i) {
+        return i.getMaster().equals(master) && i.getSlave().equals(slave);
     }
 
     @Override

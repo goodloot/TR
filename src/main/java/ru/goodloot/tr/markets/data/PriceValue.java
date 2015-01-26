@@ -14,14 +14,8 @@ public class PriceValue {
 
     private double sell;
 
-    public boolean isSame(PriceValue v) {
+    public boolean equals(PriceValue v) {
         return buy == v.getBuy() && sell == v.getSell();
-    }
-
-    public void setPrice(PriceValue v) {
-
-        buy = v.getBuy();
-        sell = v.getSell();
     }
 
     @Override
