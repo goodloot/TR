@@ -34,8 +34,8 @@ public class PeriodicalInfoReceiver implements Runnable {
                     marketInfoReceiver.getInfo();
                 } catch (RuntimeException e) {
                     LoggerUtils.out("Exception performing marketInfoReceiver "
-                            + marketInfoReceiver.getClass().getSimpleName());
-                    e.printStackTrace();
+                            + marketInfoReceiver.getClass().getSimpleName(), e.getMessage());
+//                    e.printStackTrace();
                 }
             });
             infoThread.start();
