@@ -103,11 +103,21 @@ public class LoggerUtils {
 
         StringBuilder sb = new StringBuilder(date);
         for (Object o : objs) {
+
             if (o instanceof Double) {
                 sb.append(String.format("%7.5f", o));
+
+            } else if (o instanceof StackTraceElement[]) {
+
+                for (StackTraceElement element : (StackTraceElement[]) o) {
+                    sb.append(element.toString());
+                    sb.append("\n");
+                }
+
             } else {
                 sb.append(o);
             }
+
             if (o != objs[objs.length - 1]) {
                 sb.append("\t");
             }
