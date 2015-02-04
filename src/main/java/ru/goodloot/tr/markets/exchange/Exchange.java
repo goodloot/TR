@@ -3,13 +3,14 @@
  */
 package ru.goodloot.tr.markets.exchange;
 
+import org.json.simple.parser.ParseException;
+import ru.goodloot.tr.utils.AbstractUtils;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
-import org.json.simple.parser.ParseException;
-import ru.goodloot.tr.utils.AbstractUtils;
 
 /**
  * 
@@ -29,6 +30,8 @@ public abstract class Exchange extends AbstractUtils {
             // add reuqest header
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", USER_AGENT);
+            con.setReadTimeout(5 * 1000);
+
             StringBuilder response;
             try (BufferedReader in =
                             new BufferedReader(

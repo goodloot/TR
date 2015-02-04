@@ -14,8 +14,6 @@ public class PeriodicalInfoReceiver implements Runnable {
 
     protected final MarketInfoReceiver marketInfoReceiver;
 
-//    private static final Logger logger = LoggerFactory.getLogger(PeriodicalInfoReceiver.class);
-
     public PeriodicalInfoReceiver(MarketInfoReceiver marketInfoReceiver,
             int period) {
         this.marketInfoReceiver = marketInfoReceiver;
@@ -29,7 +27,7 @@ public class PeriodicalInfoReceiver implements Runnable {
 
             long timePassed = System.currentTimeMillis();
 
-            Thread infoThread = new Thread(() ->  {
+//            Thread infoThread = new Thread(() ->  {
                 try {
                     marketInfoReceiver.getInfo();
                 } catch (RuntimeException e) {
@@ -37,22 +35,22 @@ public class PeriodicalInfoReceiver implements Runnable {
                             + marketInfoReceiver.getClass().getSimpleName(), e.getMessage());
 //                    e.printStackTrace();
                 }
-            });
-            infoThread.start();
-
-            try {
-                infoThread.join(10 * 1000);
-            } catch (InterruptedException e) {
-                LoggerUtils.out("Interrupted exception");
-                e.printStackTrace();
-            }
-
-            if (infoThread.isAlive()) {
-                LoggerUtils
-                        .out("Interrupting getInfo thread after 10 seconds",
-                                infoThread.getStackTrace());
-                infoThread.interrupt();
-            }
+//            });
+//            infoThread.start();
+//
+//            try {
+//                infoThread.join(10 * 1000);
+//            } catch (InterruptedException e) {
+//                LoggerUtils.out("Interrupted exception");
+//                e.printStackTrace();
+//            }
+//
+//            if (infoThread.isAlive()) {
+//                LoggerUtils
+//                        .out("Interrupting getInfo thread after 10 seconds",
+//                                infoThread.getStackTrace());
+//                infoThread.interrupt();
+//            }
 
             timePassed = System.currentTimeMillis() - timePassed;
 
